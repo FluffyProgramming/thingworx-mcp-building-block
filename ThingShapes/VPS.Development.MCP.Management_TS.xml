@@ -124,6 +124,13 @@
                             <Rows>
                                 <Row>
                                     <code><![CDATA[try {
+    if (!fileName || fileName.indexOf("..") !== -1 || fileName.indexOf("/") !== -1 || fileName.indexOf("\\") !== -1) {
+        throw new Error("fileName must not be empty or contain path separators or '..': " + fileName);
+    }
+    if (!folderName || folderName.indexOf("..") !== -1 || folderName.indexOf("/") !== -1 || folderName.indexOf("\\") !== -1) {
+        throw new Error("folderName must not be empty or contain path separators or '..': " + folderName);
+    }
+
     var zipPath = folderName + "/" + fileName;
 
     var decodedBytes = Packages.java.util.Base64.getDecoder().decode(zipContent);
