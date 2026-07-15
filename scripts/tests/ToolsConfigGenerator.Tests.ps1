@@ -148,4 +148,70 @@ Test-Case 'writing zero rows leaves the table empty without error' {
     }
 }
 
+Test-Case 'wraps JSON-typed fields (meta, inputSchema, outputSchema) in a <json> element' {
+    $tempPath = New-TempEntryPointCopy
+    try {
+        $rows = @(
+            [ordered]@{
+                toolName            = 'GetWidget'
+                serviceProviderName = 'VPS.Development.MCP.Manager'
+                serviceProviderType = 'Thing'
+                serviceName         = 'GetWidget'
+                description         = ''
+                title               = 'GetWidget'
+                applicationName     = 'VPS.Development.MCP'
+                meta                = '{}'
+                toolAnnotations     = '{}'
+                inputSchema         = '{"type":"object"}'
+                outputSchema        = '{"type":"array"}'
+            }
+        )
+
+        Set-ToolsConfigurationTable -EntryPointPath $tempPath -Rows $rows
+
+        [xml]$result = Get-Content -Path $tempPath -Raw
+        $rowNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']/Rows/Row")
+
+        Assert-Equal -Actual $rowNode.SelectSingleNode('meta/json').InnerText -Expected '{}'
+        Assert-Equal -Actual $rowNode.SelectSingleNode('inputSchema/json').InnerText -Expected '{"type":"object"}'
+        Assert-Equal -Actual $rowNode.SelectSingleNode('outputSchema/json').InnerText -Expected '{"type":"array"}'
+    } finally {
+        Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
+    }
+}
+
+Test-Case 'writes toolAnnotations as an empty infoTable structure' {
+    $tempPath = New-TempEntryPointCopy
+    try {
+        $rows = @(
+            [ordered]@{
+                toolName            = 'GetWidget'
+                serviceProviderName = 'VPS.Development.MCP.Manager'
+                serviceProviderType = 'Thing'
+                serviceName         = 'GetWidget'
+                description         = ''
+                title               = 'GetWidget'
+                applicationName     = 'VPS.Development.MCP'
+                meta                = '{}'
+                toolAnnotations     = '{}'
+                inputSchema         = '{"type":"object"}'
+                outputSchema        = '{"type":"array"}'
+            }
+        )
+
+        Set-ToolsConfigurationTable -EntryPointPath $tempPath -Rows $rows
+
+        [xml]$result = Get-Content -Path $tempPath -Raw
+        $rowNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']/Rows/Row")
+        $infoTableNode = $rowNode.SelectSingleNode('toolAnnotations/infoTable')
+
+        Assert-True -Condition ($null -ne $infoTableNode) -Message 'Expected toolAnnotations/infoTable to exist'
+        Assert-True -Condition ($null -ne $infoTableNode.SelectSingleNode('DataShape/FieldDefinitions')) -Message 'Expected an empty DataShape/FieldDefinitions'
+        Assert-True -Condition ($null -ne $infoTableNode.SelectSingleNode('Rows')) -Message 'Expected an empty Rows'
+        Assert-Equal -Actual $infoTableNode.SelectSingleNode('Rows').ChildNodes.Count -Expected 0
+    } finally {
+        Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
+    }
+}
+
 Write-TestSummary

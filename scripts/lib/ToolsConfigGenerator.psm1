@@ -69,6 +69,9 @@ function ConvertTo-ToolInfoRow {
     }
 }
 
+$script:JsonFieldNames = @('meta', 'inputSchema', 'outputSchema')
+$script:InfoTableFieldNames = @('toolAnnotations')
+
 function Set-ToolsConfigurationTable {
     param(
         [Parameter(Mandatory)] [string] $EntryPointPath,
@@ -88,8 +91,31 @@ function Set-ToolsConfigurationTable {
         $rowNode = $xml.CreateElement('Row')
         foreach ($fieldName in $row.Keys) {
             $fieldNode = $xml.CreateElement($fieldName)
-            $cdata = $xml.CreateCDataSection([string]$row[$fieldName])
-            $fieldNode.AppendChild($cdata) | Out-Null
+
+            if ($script:InfoTableFieldNames -contains $fieldName) {
+                # INFOTABLE fields (e.g. toolAnnotations, aspect.dataShape="MCPToolAnnotations") need a real
+                # <infoTable><DataShape>...</DataShape><Rows>...</Rows></infoTable> structure, not JSON text.
+                # No per-tool annotation data exists yet, so this always writes the empty-but-valid form
+                # confirmed against a live ThingWorx 10.1 server (Composer round-trips an untouched
+                # toolAnnotations field to exactly this shape).
+                $infoTableNode = $xml.CreateElement('infoTable')
+                $dataShapeNode = $xml.CreateElement('DataShape')
+                $dataShapeNode.AppendChild($xml.CreateElement('FieldDefinitions')) | Out-Null
+                $infoTableNode.AppendChild($dataShapeNode) | Out-Null
+                $infoTableNode.AppendChild($xml.CreateElement('Rows')) | Out-Null
+                $fieldNode.AppendChild($infoTableNode) | Out-Null
+            } elseif ($script:JsonFieldNames -contains $fieldName) {
+                # JSON-baseType fields need their CDATA wrapped in a <json> child element — confirmed
+                # against a live ThingWorx 10.1 export; without it, Composer silently reads the field as empty.
+                $jsonNode = $xml.CreateElement('json')
+                $cdata = $xml.CreateCDataSection([string]$row[$fieldName])
+                $jsonNode.AppendChild($cdata) | Out-Null
+                $fieldNode.AppendChild($jsonNode) | Out-Null
+            } else {
+                $cdata = $xml.CreateCDataSection([string]$row[$fieldName])
+                $fieldNode.AppendChild($cdata) | Out-Null
+            }
+
             $rowNode.AppendChild($fieldNode) | Out-Null
         }
         $rowsNode.AppendChild($rowNode) | Out-Null
