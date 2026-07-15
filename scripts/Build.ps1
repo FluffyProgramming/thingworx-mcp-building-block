@@ -20,9 +20,9 @@ $projectPath      = Join-Path $RepoRoot 'Projects/VPS.Development.MCP.xml'
 
 Write-Host "Regenerating ToolsConfiguration from $managementTsPath ..."
 $services = Get-ManagementServiceDefinitions -Path $managementTsPath
-$rows = $services | ForEach-Object {
+$rows = @($services | ForEach-Object {
     ConvertTo-ToolInfoRow -Service $_ -ManagerThingName 'VPS.Development.MCP.Manager' -ApplicationName 'VPS.Development.MCP'
-}
+})
 Set-ToolsConfigurationTable -EntryPointPath $entryPointPath -Rows $rows
 Write-Host "Wrote $($rows.Count) tool row(s) into $entryPointPath"
 
