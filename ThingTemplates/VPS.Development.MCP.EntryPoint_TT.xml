@@ -38,7 +38,26 @@
                      type="OrganizationalUnit"></Principal>
                 </Visibility>
             </VisibilityPermissions>
-            <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
+            <ConfigurationTableDefinitions>
+                <ConfigurationTableDefinition
+                 category=""
+                 dataShapeName=""
+                 description="Configuration table to store the components core manager"
+                 isHidden="false"
+                 isMultiRow="true"
+                 name="ComponentManager"
+                 ordinal="0"
+                 source="IMPORT"></ConfigurationTableDefinition>
+                <ConfigurationTableDefinition
+                 category=""
+                 dataShapeName=""
+                 description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1"
+                 isHidden="false"
+                 isMultiRow="true"
+                 name="ToolsConfiguration"
+                 ordinal="1"
+                 source="IMPORT"></ConfigurationTableDefinition>
+            </ConfigurationTableDefinitions>
             <ConfigurationTables>
                 <ConfigurationTable
                  dataShapeName=""
@@ -69,7 +88,7 @@
                  description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1"
                  isMultiRow="true"
                  name="ToolsConfiguration"
-                 ordinal="0">
+                 ordinal="1">
                     <DataShape>
                         <FieldDefinitions>
                             <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1"></FieldDefinition>
