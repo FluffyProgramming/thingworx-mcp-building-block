@@ -69,4 +69,32 @@ function ConvertTo-ToolInfoRow {
     }
 }
 
-Export-ModuleMember -Function Get-ManagementServiceDefinitions, ConvertTo-ToolInfoRow
+function Set-ToolsConfigurationTable {
+    param(
+        [Parameter(Mandatory)] [string] $EntryPointPath,
+        [Parameter()] [array] $Rows = @()
+    )
+
+    [xml]$xml = Get-Content -Path $EntryPointPath -Raw
+    $tableNode = $xml.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']")
+    if (-not $tableNode) {
+        throw "Set-ToolsConfigurationTable: no ConfigurationTable named 'ToolsConfiguration' found in $EntryPointPath"
+    }
+
+    $rowsNode = $tableNode.SelectSingleNode('Rows')
+    $rowsNode.RemoveAll() | Out-Null
+
+    foreach ($row in $Rows) {
+        $rowNode = $xml.CreateElement('Row')
+        foreach ($fieldName in $row.Keys) {
+            $fieldNode = $xml.CreateElement($fieldName)
+            $fieldNode.InnerText = [string]$row[$fieldName]
+            $rowNode.AppendChild($fieldNode) | Out-Null
+        }
+        $rowsNode.AppendChild($rowNode) | Out-Null
+    }
+
+    $xml.Save($EntryPointPath)
+}
+
+Export-ModuleMember -Function Get-ManagementServiceDefinitions, ConvertTo-ToolInfoRow, Set-ToolsConfigurationTable

@@ -80,4 +80,72 @@ Test-Case 'includes an INFOTABLE parameter as an array in inputSchema' {
     Assert-Equal -Actual $schema.properties.widgets.type -Expected 'array'
 }
 
+function New-TempEntryPointCopy {
+    $tempPath = Join-Path ([System.IO.Path]::GetTempPath()) ("EntryPoint-" + [guid]::NewGuid() + ".xml")
+    Copy-Item -Path "$PSScriptRoot/fixtures/EntryPoint.sample.xml" -Destination $tempPath
+    return $tempPath
+}
+
+Test-Case 'writes one row per tool into the ToolsConfiguration table' {
+    $tempPath = New-TempEntryPointCopy
+    try {
+        $rows = @(
+            [ordered]@{
+                toolName            = 'GetWidget'
+                serviceProviderName = 'VPS.Development.MCP.Manager'
+                serviceProviderType = 'Thing'
+                serviceName         = 'GetWidget'
+                description         = 'Gets a widget by id'
+                title               = 'GetWidget'
+                applicationName     = 'VPS.Development.MCP'
+                meta                = '{}'
+                toolAnnotations     = '{}'
+                inputSchema         = '{"type":"object"}'
+                outputSchema        = '{"type":"array"}'
+            }
+        )
+
+        Set-ToolsConfigurationTable -EntryPointPath $tempPath -Rows $rows
+
+        [xml]$result = Get-Content -Path $tempPath -Raw
+        $tableNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']")
+        Assert-Equal -Actual @($tableNode.Rows.Row).Count -Expected 1
+        Assert-Equal -Actual $tableNode.Rows.Row.toolName -Expected 'GetWidget'
+        Assert-Equal -Actual $tableNode.Rows.Row.serviceProviderName -Expected 'VPS.Development.MCP.Manager'
+    } finally {
+        Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
+    }
+}
+
+Test-Case 'replaces existing rows rather than appending to them' {
+    $tempPath = New-TempEntryPointCopy
+    try {
+        $firstRows = @([ordered]@{ toolName = 'OldTool'; serviceProviderName = 'X'; serviceProviderType = 'Thing'; serviceName = 'OldTool'; description = ''; title = 'OldTool'; applicationName = 'X'; meta = '{}'; toolAnnotations = '{}'; inputSchema = '{}'; outputSchema = '{}' })
+        Set-ToolsConfigurationTable -EntryPointPath $tempPath -Rows $firstRows
+
+        $secondRows = @([ordered]@{ toolName = 'NewTool'; serviceProviderName = 'X'; serviceProviderType = 'Thing'; serviceName = 'NewTool'; description = ''; title = 'NewTool'; applicationName = 'X'; meta = '{}'; toolAnnotations = '{}'; inputSchema = '{}'; outputSchema = '{}' })
+        Set-ToolsConfigurationTable -EntryPointPath $tempPath -Rows $secondRows
+
+        [xml]$result = Get-Content -Path $tempPath -Raw
+        $tableNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']")
+        Assert-Equal -Actual @($tableNode.Rows.Row).Count -Expected 1
+        Assert-Equal -Actual $tableNode.Rows.Row.toolName -Expected 'NewTool'
+    } finally {
+        Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
+    }
+}
+
+Test-Case 'writing zero rows leaves the table empty without error' {
+    $tempPath = New-TempEntryPointCopy
+    try {
+        Set-ToolsConfigurationTable -EntryPointPath $tempPath -Rows @()
+
+        [xml]$result = Get-Content -Path $tempPath -Raw
+        $tableNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']")
+        Assert-Equal -Actual $tableNode.Rows.ChildNodes.Count -Expected 0
+    } finally {
+        Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
+    }
+}
+
 Write-TestSummary
