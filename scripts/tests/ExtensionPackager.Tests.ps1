@@ -17,6 +17,18 @@ Test-Case 'New-ExtensionMetadataXml defaults dependsOn to empty' {
     Assert-Equal -Actual $xml.SelectSingleNode('//ExtensionPackage').dependsOn -Expected ''
 }
 
+Test-Case 'New-ExtensionMetadataXml sets the given vendor' {
+    $content = New-ExtensionMetadataXml -Name 'X' -PackageVersion '1.0.0' -MinimumThingWorxVersion '10.1.0' -Vendor 'Derrick Swint'
+    [xml]$xml = $content
+    Assert-Equal -Actual $xml.SelectSingleNode('//ExtensionPackage').vendor -Expected 'Derrick Swint'
+}
+
+Test-Case 'New-ExtensionMetadataXml defaults vendor to empty' {
+    $content = New-ExtensionMetadataXml -Name 'X' -PackageVersion '1.0.0' -MinimumThingWorxVersion '10.1.0'
+    [xml]$xml = $content
+    Assert-Equal -Actual $xml.SelectSingleNode('//ExtensionPackage').vendor -Expected ''
+}
+
 Test-Case 'Get-ProjectPackageVersion reads packageVersion from the Project entity XML' {
     $path = "$PSScriptRoot/fixtures/Project.sample.xml"
     Assert-Equal -Actual (Get-ProjectPackageVersion -ProjectXmlPath $path) -Expected '1.0.0'

@@ -34,5 +34,5 @@ $packageVersion = Get-ProjectPackageVersion -ProjectXmlPath $projectPath
 $outputPath = Join-Path $OutputDirectory "VPS.Development.MCP-extension-$packageVersion.zip"
 
 Write-Host "Packaging extension $outputPath ..."
-New-ExtensionPackage -RepoRoot $RepoRoot -Name 'VPS.Development.MCP' -PackageVersion $packageVersion -MinimumThingWorxVersion '10.1.0' -OutputPath $outputPath -DependsOn ''
+New-ExtensionPackage -RepoRoot $RepoRoot -Name 'VPS.Development.MCP' -PackageVersion $packageVersion -MinimumThingWorxVersion '10.1.0' -OutputPath $outputPath -DependsOn '' -Vendor 'Derrick Swint'
 Write-Host "Done: $outputPath"

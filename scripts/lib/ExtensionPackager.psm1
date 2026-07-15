@@ -3,7 +3,8 @@ function New-ExtensionMetadataXml {
         [Parameter(Mandatory)] [string] $Name,
         [Parameter(Mandatory)] [string] $PackageVersion,
         [Parameter(Mandatory)] [string] $MinimumThingWorxVersion,
-        [string] $DependsOn = ''
+        [string] $DependsOn = '',
+        [string] $Vendor = ''
     )
 
     return @"
@@ -23,7 +24,7 @@ function New-ExtensionMetadataXml {
          homeMashup=""
          name="$Name"
          tags=""
-         vendor=""/>
+         vendor="$Vendor"/>
     </ExtensionPackages>
 </Entities>
 "@
@@ -50,6 +51,7 @@ function New-ExtensionPackage {
         [Parameter(Mandatory)] [string] $MinimumThingWorxVersion,
         [Parameter(Mandatory)] [string] $OutputPath,
         [string] $DependsOn = '',
+        [string] $Vendor = '',
         [string[]] $EntityFolders = @('DataShapes', 'Groups', 'Organizations', 'Projects', 'ThingShapes', 'ThingTemplates', 'Things')
     )
 
@@ -66,7 +68,7 @@ function New-ExtensionPackage {
             }
         }
 
-        $metadata = New-ExtensionMetadataXml -Name $Name -PackageVersion $PackageVersion -MinimumThingWorxVersion $MinimumThingWorxVersion -DependsOn $DependsOn
+        $metadata = New-ExtensionMetadataXml -Name $Name -PackageVersion $PackageVersion -MinimumThingWorxVersion $MinimumThingWorxVersion -DependsOn $DependsOn -Vendor $Vendor
         Set-Content -Path (Join-Path $stagingDir 'metadata.xml') -Value $metadata -Encoding UTF8
 
         if (Test-Path $OutputPath) {
