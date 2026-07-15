@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entities
+ majorVersion="10"
+ minorVersion="1"
+ universal="password">
+    <Things>
+        <Thing
+         name="Fixture.EntryPoint"
+         projectName="Fixture"
+         thingTemplate="Fixture.EntryPoint_TT">
+            <ConfigurationTables>
+                <ConfigurationTable
+                 dataShapeName=""
+                 description="MCP tool registrations"
+                 isMultiRow="true"
+                 name="ToolsConfiguration"
+                 ordinal="0">
+                    <DataShape>
+                        <FieldDefinitions>
+                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="2"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="3"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="4"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="5"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="6"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="7"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="8"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="toolAnnotations" ordinal="9"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="10"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="11"></FieldDefinition>
+                        </FieldDefinitions>
+                    </DataShape>
+                    <Rows></Rows>
+                </ConfigurationTable>
+            </ConfigurationTables>
+        </Thing>
+    </Things>
+</Entities>
