@@ -88,13 +88,24 @@ function Set-ToolsConfigurationTable {
         $rowNode = $xml.CreateElement('Row')
         foreach ($fieldName in $row.Keys) {
             $fieldNode = $xml.CreateElement($fieldName)
-            $fieldNode.InnerText = [string]$row[$fieldName]
+            $cdata = $xml.CreateCDataSection([string]$row[$fieldName])
+            $fieldNode.AppendChild($cdata) | Out-Null
             $rowNode.AppendChild($fieldNode) | Out-Null
         }
         $rowsNode.AppendChild($rowNode) | Out-Null
     }
 
-    $xml.Save($EntryPointPath)
+    $settings = New-Object System.Xml.XmlWriterSettings
+    $settings.Indent = $true
+    $settings.IndentChars = '    '
+    $settings.Encoding = New-Object System.Text.UTF8Encoding($false)
+
+    $writer = [System.Xml.XmlWriter]::Create($EntryPointPath, $settings)
+    try {
+        $xml.Save($writer)
+    } finally {
+        $writer.Dispose()
+    }
 }
 
 Export-ModuleMember -Function Get-ManagementServiceDefinitions, ConvertTo-ToolInfoRow, Set-ToolsConfigurationTable

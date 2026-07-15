@@ -1,8 +1,15 @@
 [CmdletBinding()]
 param(
-    [string] $RepoRoot = (Resolve-Path "$PSScriptRoot/..").Path,
-    [string] $OutputDirectory = (Join-Path $RepoRoot 'dist')
+    [string] $RepoRoot,
+    [string] $OutputDirectory
 )
+
+if (-not $RepoRoot) {
+    $RepoRoot = (Resolve-Path "$PSScriptRoot/..").Path
+}
+if (-not $OutputDirectory) {
+    $OutputDirectory = Join-Path $RepoRoot 'dist'
+}
 
 Import-Module "$PSScriptRoot/lib/ToolsConfigGenerator.psm1" -Force
 Import-Module "$PSScriptRoot/lib/ExtensionPackager.psm1" -Force

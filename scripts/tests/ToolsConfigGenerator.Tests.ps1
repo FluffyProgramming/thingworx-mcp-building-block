@@ -110,8 +110,8 @@ Test-Case 'writes one row per tool into the ToolsConfiguration table' {
         [xml]$result = Get-Content -Path $tempPath -Raw
         $tableNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']")
         Assert-Equal -Actual @($tableNode.Rows.Row).Count -Expected 1
-        Assert-Equal -Actual $tableNode.Rows.Row.toolName -Expected 'GetWidget'
-        Assert-Equal -Actual $tableNode.Rows.Row.serviceProviderName -Expected 'VPS.Development.MCP.Manager'
+        Assert-Equal -Actual $tableNode.Rows.Row.SelectSingleNode('toolName').InnerText -Expected 'GetWidget'
+        Assert-Equal -Actual $tableNode.Rows.Row.SelectSingleNode('serviceProviderName').InnerText -Expected 'VPS.Development.MCP.Manager'
     } finally {
         Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
     }
@@ -129,7 +129,7 @@ Test-Case 'replaces existing rows rather than appending to them' {
         [xml]$result = Get-Content -Path $tempPath -Raw
         $tableNode = $result.SelectSingleNode("//ConfigurationTable[@name='ToolsConfiguration']")
         Assert-Equal -Actual @($tableNode.Rows.Row).Count -Expected 1
-        Assert-Equal -Actual $tableNode.Rows.Row.toolName -Expected 'NewTool'
+        Assert-Equal -Actual $tableNode.Rows.Row.SelectSingleNode('toolName').InnerText -Expected 'NewTool'
     } finally {
         Remove-Item -Path $tempPath -ErrorAction SilentlyContinue
     }
