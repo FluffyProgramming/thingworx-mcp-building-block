@@ -45,7 +45,11 @@
             <RemoteServiceBindings></RemoteServiceBindings>
             <RemoteEventBindings></RemoteEventBindings>
             <AlertConfigurations></AlertConfigurations>
-            <ImplementedShapes></ImplementedShapes>
+            <ImplementedShapes>
+                <ImplementedShape
+                 name="VPS.Development.MCP.Management_TS"
+                 type="ThingShape"></ImplementedShape>
+            </ImplementedShapes>
             <ThingProperties></ThingProperties>
         </Thing>
     </Things>
