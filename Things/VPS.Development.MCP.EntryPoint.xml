@@ -105,19 +105,17 @@
                                 </DataShape>
                                 <Rows>
                                     <Row>
-                                        <code><![CDATA[
-                                        try {
-                                            let table = me.GetConfigurationTable({
-                                                tableName: "ToolsConfiguration"
-                                            });
-                                            Resources["MCPServices"].AddTools({
-                                                toolInfo: table
-                                            });
-                                            logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + table.rows.length + " tool(s).");
-                                        } catch (err) {
-                                            logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
-                                        }
-                                        ]]></code>
+                                        <code><![CDATA[try {
+    let table = me.GetConfigurationTable({
+        tableName: "ToolsConfiguration"
+    });
+    Resources["MCPServices"].AddTools({
+        toolInfo: table
+    });
+    logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + table.rows.length + " tool(s).");
+} catch (err) {
+    logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
+}]]></code>
                                     </Row>
                                 </Rows>
                             </ConfigurationTable>
@@ -136,9 +134,7 @@
                                     </DataShape>
                                     <Rows>
                                         <Row>
-                                            <code><![CDATA[
-                                            me.RegisterTools();
-                                            ]]></code>
+                                            <code><![CDATA[me.RegisterTools();]]></code>
                                         </Row>
                                     </Rows>
                                 </ConfigurationTable>
