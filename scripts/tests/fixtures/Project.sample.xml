@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Entities majorVersion="10" minorVersion="1" universal="password">
+    <Projects>
+        <Project name="Fixture" packageVersion="1.0.0" projectName="Fixture" state="DRAFT"></Project>
+    </Projects>
+</Entities>
