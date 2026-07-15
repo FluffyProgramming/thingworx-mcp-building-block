@@ -66,27 +66,131 @@
                     </DataShape>
                     <Rows>
                         <Row>
-                            <id>
-                            <![CDATA[
-                            ComponentManager
-                            ]]>
-                            </id>
-                            <managerThingName>
-                            <![CDATA[
-                            VPS.Development.MCP.Manager
-                            ]]>
-                            </managerThingName>
+                            <id><![CDATA[ComponentManager]]></id>
+                            <managerThingName><![CDATA[VPS.Development.MCP.Manager]]></managerThingName>
                         </Row>
                     </Rows>
+                </ConfigurationTable>
+                <ConfigurationTable
+                 dataShapeName=""
+                 description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1"
+                 isMultiRow="true"
+                 name="ToolsConfiguration"
+                 ordinal="0">
+                    <DataShape>
+                        <FieldDefinitions>
+                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="2"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="3"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="4"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="5"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="6"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="7"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="8"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="toolAnnotations" ordinal="9"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="10"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="11"></FieldDefinition>
+                        </FieldDefinitions>
+                    </DataShape>
+                    <Rows></Rows>
                 </ConfigurationTable>
             </ConfigurationTables>
             <ThingShape>
                 <PropertyDefinitions></PropertyDefinitions>
-                <ServiceDefinitions></ServiceDefinitions>
+                <ServiceDefinitions>
+                    <ServiceDefinition
+                     aspect.isAsync="false"
+                     category=""
+                     description="Reads the ToolsConfiguration table and registers each row as an MCP tool via Resources[&quot;MCPServices&quot;].AddTools."
+                     isAllowOverride="false"
+                     isLocalOnly="false"
+                     isOpen="false"
+                     isPrivate="false"
+                     name="RegisterTools">
+                        <ResultType
+                         baseType="NOTHING"
+                         description=""
+                         name="result"
+                         ordinal="0"></ResultType>
+                        <ParameterDefinitions></ParameterDefinitions>
+                    </ServiceDefinition>
+                </ServiceDefinitions>
                 <EventDefinitions></EventDefinitions>
                 <ServiceMappings></ServiceMappings>
-                <ServiceImplementations></ServiceImplementations>
-                <Subscriptions></Subscriptions>
+                <ServiceImplementations>
+                    <ServiceImplementation
+                     description=""
+                     handlerName="Script"
+                     name="RegisterTools">
+                        <ConfigurationTables>
+                            <ConfigurationTable
+                             dataShapeName=""
+                             description=""
+                             isMultiRow="false"
+                             name="Script"
+                             ordinal="0">
+                                <DataShape>
+                                    <FieldDefinitions>
+                                        <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
+                                    </FieldDefinitions>
+                                </DataShape>
+                                <Rows>
+                                    <Row>
+                                        <code><![CDATA[try {
+    Resources["MCPServices"].AddTools({
+        toolInfo: me.ToolsConfiguration
+    });
+    logInfo("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + me.ToolsConfiguration.rows.length + " tool(s).");
+} catch (err) {
+    logError("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
+}]]></code>
+                                    </Row>
+                                </Rows>
+                            </ConfigurationTable>
+                        </ConfigurationTables>
+                    </ServiceImplementation>
+                </ServiceImplementations>
+                <Subscriptions>
+                    <Subscription
+                     aspect.isDistributed="false"
+                     description=""
+                     enabled="true"
+                     name="AddToolsOnStart"
+                     version="2">
+                        <ServiceImplementation
+                         description=""
+                         handlerName="Script"
+                         name="AddToolsOnStart">
+                            <ConfigurationTables>
+                                <ConfigurationTable
+                                 dataShapeName=""
+                                 description=""
+                                 isMultiRow="false"
+                                 name="Script"
+                                 ordinal="0">
+                                    <DataShape>
+                                        <FieldDefinitions>
+                                            <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
+                                        </FieldDefinitions>
+                                    </DataShape>
+                                    <Rows>
+                                        <Row>
+                                            <code><![CDATA[me.RegisterTools();]]></code>
+                                        </Row>
+                                    </Rows>
+                                </ConfigurationTable>
+                            </ConfigurationTables>
+                        </ServiceImplementation>
+                        <Events>
+                            <Event
+                             alias="Me_ThingStart"
+                             eventName="ThingStart"
+                             source=""
+                             sourceProperty=""
+                             sourceType="Thing"></Event>
+                        </Events>
+                    </Subscription>
+                </Subscriptions>
             </ThingShape>
             <PropertyBindings></PropertyBindings>
             <RemotePropertyBindings></RemotePropertyBindings>
