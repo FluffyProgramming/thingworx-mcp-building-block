@@ -37,6 +37,38 @@
                          ordinal="1"></FieldDefinition>
                     </ParameterDefinitions>
                 </ServiceDefinition>
+                <ServiceDefinition
+                 aspect.isAsync="false"
+                 category=""
+                 description="Uploads a base64-encoded zip of ThingWorx entity XML into SystemRepository, extracts it, and imports the entities into the running server."
+                 isAllowOverride="false"
+                 isLocalOnly="false"
+                 isOpen="false"
+                 isPrivate="false"
+                 name="ImportEntityZip">
+                    <ResultType
+                     baseType="STRING"
+                     description=""
+                     name="result"
+                     ordinal="0"></ResultType>
+                    <ParameterDefinitions>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Base64-encoded bytes of the zip to import."
+                         name="zipContent"
+                         ordinal="1"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Name to give the uploaded file, e.g. VPS.zip."
+                         name="fileName"
+                         ordinal="2"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Subfolder under the SystemRepository root to upload, extract, and import into, e.g. vps."
+                         name="folderName"
+                         ordinal="3"></FieldDefinition>
+                    </ParameterDefinitions>
+                </ServiceDefinition>
             </ServiceDefinitions>
             <EventDefinitions></EventDefinitions>
             <ServiceMappings></ServiceMappings>
@@ -64,6 +96,63 @@
                             <Rows>
                                 <Row>
                                     <code><![CDATA[result = Test;]]></code>
+                                </Row>
+                            </Rows>
+                        </ConfigurationTable>
+                    </ConfigurationTables>
+                </ServiceImplementation>
+                <ServiceImplementation
+                 description=""
+                 handlerName="Script"
+                 name="ImportEntityZip">
+                    <ConfigurationTables>
+                        <ConfigurationTable
+                         dataShapeName=""
+                         description=""
+                         isMultiRow="false"
+                         name="Script"
+                         ordinal="0">
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     baseType="STRING"
+                                     description="code"
+                                     name="code"
+                                     ordinal="0"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows>
+                                <Row>
+                                    <code><![CDATA[try {
+    var zipPath = folderName + "/" + fileName;
+
+    var decodedBytes = Packages.java.util.Base64.getDecoder().decode(zipContent);
+    var zipContentStream = new Packages.java.io.ByteArrayInputStream(decodedBytes);
+
+    Things["SystemRepository"].SaveBinary({
+        path: zipPath,
+        content: zipContentStream
+    });
+
+    Things["SystemRepository"].ExtractZipArchive({
+        zipFileName: zipPath,
+        path: folderName
+    });
+
+    Resources["SourceControlFunctions"].ImportSourceControlledEntities({
+        repositoryName: "SystemRepository",
+        path: folderName,
+        useDefaultDataProvider: true,
+        withSubsystems: false,
+        overwritePropertyValues: true,
+        overwriteConfigurationTableValues: true
+    });
+
+    result = "Imported entities from " + zipPath + " into folder " + folderName + ".";
+} catch (err) {
+    logger.error("VPS.Development.MCP.Management_TS.ImportEntityZip failed: " + err.message);
+    throw err;
+}]]></code>
                                 </Row>
                             </Rows>
                         </ConfigurationTable>
