@@ -1,24 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Entities
- majorVersion="10"
- minorVersion="1"
- universal="password">
+<?xml version="1.0" encoding="utf-8"?>
+<Entities majorVersion="10" minorVersion="1" universal="password">
     <Things>
-        <Thing
-         aspect.isSystemObject="false"
-         description="Velotic Professional Services MCP services to help with AI development."
-         documentationContent=""
-         effectiveThingPackage="ConfiguredThing"
-         enabled="true"
-         homeMashup=""
-         identifier=""
-         inheritedValueStream=""
-         name="VPS.Development.MCP.EntryPoint"
-         projectName="VPS.Development.MCP"
-         published="false"
-         tags=""
-         thingTemplate="VPS.Development.MCP.EntryPoint_TT"
-         valueStream="">
+        <Thing aspect.isSystemObject="false" description="Velotic Professional Services MCP services to help with AI development." documentationContent="" effectiveThingPackage="ConfiguredThing" enabled="true" homeMashup="" identifier="" inheritedValueStream="" name="VPS.Development.MCP.EntryPoint" projectName="VPS.Development.MCP" published="false" tags="" thingTemplate="VPS.Development.MCP.EntryPoint_TT" valueStream="">
             <avatar></avatar>
             <DesignTimePermissions>
                 <Create></Create>
@@ -30,182 +13,98 @@
             <RunTimePermissions></RunTimePermissions>
             <VisibilityPermissions>
                 <Visibility>
-                    <Principal
-                     isPermitted="true"
-                     name="VPS.Development.MCP.Default_OR"
-                     type="Organization"></Principal>
-                    <Principal
-                     isPermitted="true"
-                     name="VPS.Development.MCP.Default_OR:VPS.Development.MCP.Admin_UG"
-                     type="OrganizationalUnit"></Principal>
+                    <Principal isPermitted="true" name="VPS.Development.MCP.Default_OR" type="Organization"></Principal>
+                    <Principal isPermitted="true" name="VPS.Development.MCP.Default_OR:VPS.Development.MCP.Admin_UG" type="OrganizationalUnit"></Principal>
                 </Visibility>
             </VisibilityPermissions>
             <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
             <ConfigurationTables>
-                <ConfigurationTable
-                 dataShapeName=""
-                 description="Configuration table to store the components core manager"
-                 isMultiRow="true"
-                 name="ComponentManager"
-                 ordinal="0">
+                <ConfigurationTable dataShapeName="" description="Configuration table to store the components core manager" isMultiRow="true" name="ComponentManager" ordinal="0">
                     <DataShape>
                         <FieldDefinitions>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="true"
-                             baseType="STRING"
-                             description="unique identifier for the manager that needs to be configured"
-                             name="id"
-                             ordinal="1"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="THINGNAME"
-                             description="Name of the Manager Thing to be configured"
-                             name="managerThingName"
-                             ordinal="2"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="unique identifier for the manager that needs to be configured" name="id" ordinal="1"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="THINGNAME" description="Name of the Manager Thing to be configured" name="managerThingName" ordinal="2"></FieldDefinition>
                         </FieldDefinitions>
                     </DataShape>
                     <Rows>
                         <Row>
-                            <id>
-                            <![CDATA[
+                            <id><![CDATA[
                             ComponentManager
-                            ]]>
-                            </id>
-                            <managerThingName>
-                            <![CDATA[
+                            ]]></id>
+                            <managerThingName><![CDATA[
                             VPS.Development.MCP.Manager
-                            ]]>
-                            </managerThingName>
+                            ]]></managerThingName>
                         </Row>
                     </Rows>
                 </ConfigurationTable>
-                <ConfigurationTable
-                 dataShapeName=""
-                 description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1"
-                 isMultiRow="true"
-                 name="ToolsConfiguration"
-                 ordinal="1">
+                <ConfigurationTable dataShapeName="" description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1" isMultiRow="true" name="ToolsConfiguration" ordinal="1">
                     <DataShape>
                         <FieldDefinitions>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="STRING"
-                             description=""
-                             name="applicationName"
-                             ordinal="7"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="STRING"
-                             description=""
-                             name="description"
-                             ordinal="5"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="JSON"
-                             description=""
-                             name="inputSchema"
-                             ordinal="10"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="JSON"
-                             description=""
-                             name="meta"
-                             ordinal="8"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="JSON"
-                             description=""
-                             name="outputSchema"
-                             ordinal="11"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="STRING"
-                             description=""
-                             name="serviceName"
-                             ordinal="4"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="STRING"
-                             description=""
-                             name="serviceProviderName"
-                             ordinal="2"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="STRING"
-                             description=""
-                             name="serviceProviderType"
-                             ordinal="3"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="false"
-                             baseType="STRING"
-                             description=""
-                             name="title"
-                             ordinal="6"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.dataShape="MCPToolAnnotations"
-                             aspect.isPrimaryKey="false"
-                             baseType="INFOTABLE"
-                             description=""
-                             name="toolAnnotations"
-                             ordinal="9"></FieldDefinition>
-                            <FieldDefinition
-                             aspect.isPrimaryKey="true"
-                             baseType="STRING"
-                             description=""
-                             name="toolName"
-                             ordinal="1"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="7"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="5"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="10"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="8"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="11"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="4"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="2"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="3"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="6"></FieldDefinition>
+                            <FieldDefinition aspect.dataShape="MCPToolAnnotations" aspect.isPrimaryKey="false" baseType="INFOTABLE" description="" name="toolAnnotations" ordinal="9"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1"></FieldDefinition>
                         </FieldDefinitions>
                     </DataShape>
-                    <Rows></Rows>
+                    <Rows>
+                        <Row>
+                            <toolName><![CDATA[Test]]></toolName>
+                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
+                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
+                            <serviceName><![CDATA[Test]]></serviceName>
+                            <description><![CDATA[]]></description>
+                            <title><![CDATA[Test]]></title>
+                            <applicationName><![CDATA[VPS.Development.MCP]]></applicationName>
+                            <meta><![CDATA[{}]]></meta>
+                            <toolAnnotations><![CDATA[{}]]></toolAnnotations>
+                            <inputSchema><![CDATA[{"type":"object","properties":{"Test":{"type":"string"}},"required":["Test"]}]]></inputSchema>
+                            <outputSchema><![CDATA[{"type":"null"}]]></outputSchema>
+                        </Row>
+                        <Row>
+                            <toolName><![CDATA[ImportEntityZip]]></toolName>
+                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
+                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
+                            <serviceName><![CDATA[ImportEntityZip]]></serviceName>
+                            <description><![CDATA[Uploads a base64-encoded zip of ThingWorx entity XML into SystemRepository, extracts it, and imports the entities into the running server.]]></description>
+                            <title><![CDATA[ImportEntityZip]]></title>
+                            <applicationName><![CDATA[VPS.Development.MCP]]></applicationName>
+                            <meta><![CDATA[{}]]></meta>
+                            <toolAnnotations><![CDATA[{}]]></toolAnnotations>
+                            <inputSchema><![CDATA[{"type":"object","properties":{"zipContent":{"type":"string"},"fileName":{"type":"string"},"folderName":{"type":"string"}},"required":["zipContent","fileName","folderName"]}]]></inputSchema>
+                            <outputSchema><![CDATA[{"type":"string"}]]></outputSchema>
+                        </Row>
+                    </Rows>
                 </ConfigurationTable>
             </ConfigurationTables>
             <ThingShape>
                 <PropertyDefinitions></PropertyDefinitions>
                 <ServiceDefinitions>
-                    <ServiceDefinition
-                     aspect.isAsync="false"
-                     category=""
-                     description="Reads the ToolsConfiguration table and registers each row as an MCP tool via Resources[&quot;MCPServices&quot;].AddTools."
-                     isAllowOverride="false"
-                     isLocalOnly="false"
-                     isOpen="false"
-                     isPrivate="false"
-                     name="RegisterTools">
-                        <ResultType
-                         baseType="NOTHING"
-                         description=""
-                         name="result"
-                         ordinal="0"></ResultType>
+                    <ServiceDefinition aspect.isAsync="false" category="" description="Reads the ToolsConfiguration table and registers each row as an MCP tool via Resources[&quot;MCPServices&quot;].AddTools." isAllowOverride="false" isLocalOnly="false" isOpen="false" isPrivate="false" name="RegisterTools">
+                        <ResultType baseType="NOTHING" description="" name="result" ordinal="0"></ResultType>
                         <ParameterDefinitions></ParameterDefinitions>
                     </ServiceDefinition>
                 </ServiceDefinitions>
                 <EventDefinitions></EventDefinitions>
                 <ServiceMappings></ServiceMappings>
                 <ServiceImplementations>
-                    <ServiceImplementation
-                     description=""
-                     handlerName="Script"
-                     name="RegisterTools">
+                    <ServiceImplementation description="" handlerName="Script" name="RegisterTools">
                         <ConfigurationTables>
-                            <ConfigurationTable
-                             dataShapeName=""
-                             description=""
-                             isMultiRow="false"
-                             name="Script"
-                             ordinal="0">
+                            <ConfigurationTable dataShapeName="" description="" isMultiRow="false" name="Script" ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
-                                        <FieldDefinition
-                                         baseType="STRING"
-                                         description="code"
-                                         name="code"
-                                         ordinal="0"></FieldDefinition>
+                                        <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
                                     <Row>
-                                        <code>
-                                        <![CDATA[
+                                        <code><![CDATA[
                                         try {
                                             Resources["MCPServices"].AddTools({
                                                 toolInfo: me.ToolsConfiguration
@@ -214,8 +113,7 @@
                                         } catch (err) {
                                             logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
                                         }
-                                        ]]>
-                                        </code>
+                                        ]]></code>
                                     </Row>
                                 </Rows>
                             </ConfigurationTable>
@@ -223,51 +121,27 @@
                     </ServiceImplementation>
                 </ServiceImplementations>
                 <Subscriptions>
-                    <Subscription
-                     aspect.isDistributed="false"
-                     description=""
-                     enabled="true"
-                     name="AddToolsOnStart"
-                     version="2">
-                        <ServiceImplementation
-                         description=""
-                         handlerName="Script"
-                         name="AddToolsOnStart">
+                    <Subscription aspect.isDistributed="false" description="" enabled="true" name="AddToolsOnStart" version="2">
+                        <ServiceImplementation description="" handlerName="Script" name="AddToolsOnStart">
                             <ConfigurationTables>
-                                <ConfigurationTable
-                                 dataShapeName=""
-                                 description=""
-                                 isMultiRow="false"
-                                 name="Script"
-                                 ordinal="0">
+                                <ConfigurationTable dataShapeName="" description="" isMultiRow="false" name="Script" ordinal="0">
                                     <DataShape>
                                         <FieldDefinitions>
-                                            <FieldDefinition
-                                             baseType="STRING"
-                                             description="code"
-                                             name="code"
-                                             ordinal="0"></FieldDefinition>
+                                            <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
                                         </FieldDefinitions>
                                     </DataShape>
                                     <Rows>
                                         <Row>
-                                            <code>
-                                            <![CDATA[
+                                            <code><![CDATA[
                                             me.RegisterTools();
-                                            ]]>
-                                            </code>
+                                            ]]></code>
                                         </Row>
                                     </Rows>
                                 </ConfigurationTable>
                             </ConfigurationTables>
                         </ServiceImplementation>
                         <Events>
-                            <Event
-                             alias="Me_ThingStart"
-                             eventName="ThingStart"
-                             source=""
-                             sourceProperty=""
-                             sourceType="Thing"></Event>
+                            <Event alias="Me_ThingStart" eventName="ThingStart" source="" sourceProperty="" sourceType="Thing"></Event>
                         </Events>
                     </Subscription>
                 </Subscriptions>
