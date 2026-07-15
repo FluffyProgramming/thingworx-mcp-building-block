@@ -43,7 +43,7 @@
             <ConfigurationTableDefinitions>
                 <ConfigurationTableDefinition
                  category=""
-                 dataShapeName=""
+                 dataShapeName="VPS.Development.MCP.ComponentManager_DS"
                  description="Configuration table to store the components core manager"
                  isHidden="false"
                  isMultiRow="true"
@@ -52,7 +52,7 @@
                  source="IMPORT"></ConfigurationTableDefinition>
                 <ConfigurationTableDefinition
                  category=""
-                 dataShapeName=""
+                 dataShapeName="VPS.Development.MCP.ToolsConfiguration_DS"
                  description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1"
                  isHidden="false"
                  isMultiRow="true"
