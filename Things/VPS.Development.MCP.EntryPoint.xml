@@ -1,29 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Entities majorVersion="10" minorVersion="1" universal="password">
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<Entities build="b195" majorVersion="10" minorVersion="1" modelPersistenceProviderPackage="PostgresPersistenceProviderPackage" revision="1" schemaVersion="1210" universal="">
     <Things>
-        <Thing aspect.isSystemObject="false" description="Velotic Professional Services MCP services to help with AI development." documentationContent="" effectiveThingPackage="ConfiguredThing" enabled="true" homeMashup="" identifier="" inheritedValueStream="" name="VPS.Development.MCP.EntryPoint" projectName="VPS.Development.MCP" published="false" tags="" thingTemplate="VPS.Development.MCP.EntryPoint_TT" valueStream="">
-            <avatar></avatar>
+        <Thing aspect.isSystemObject="false" description="Velotic Professional Services MCP services to help with AI development." documentationContent="" effectiveThingPackage="ConfiguredThing" enabled="true" homeMashup="" identifier="" inheritedValueStream="" lastModifiedDate="2026-07-15T19:33:08.964Z" name="VPS.Development.MCP.EntryPoint" projectName="VPS.Development.MCP" published="false" tags="" thingTemplate="VPS.Development.MCP.EntryPoint_TT" valueStream="">
+            <Owner name="Administrator" type="User" />
+            <avatar />
             <DesignTimePermissions>
-                <Create></Create>
-                <Read></Read>
-                <Update></Update>
-                <Delete></Delete>
-                <Metadata></Metadata>
+                <Create />
+                <Read />
+                <Update />
+                <Delete />
+                <Metadata />
             </DesignTimePermissions>
-            <RunTimePermissions></RunTimePermissions>
+            <RunTimePermissions />
             <VisibilityPermissions>
                 <Visibility>
-                    <Principal isPermitted="true" name="VPS.Development.MCP.Default_OR" type="Organization"></Principal>
-                    <Principal isPermitted="true" name="VPS.Development.MCP.Default_OR:VPS.Development.MCP.Admin_UG" type="OrganizationalUnit"></Principal>
+                    <Principal isPermitted="true" name="VPS.Development.MCP.Default_OR" type="Organization" />
+                    <Principal isPermitted="true" name="VPS.Development.MCP.Default_OR:VPS.Development.MCP.Admin_UG" type="OrganizationalUnit" />
                 </Visibility>
             </VisibilityPermissions>
-            <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
+            <ConfigurationTableDefinitions />
             <ConfigurationTables>
                 <ConfigurationTable dataShapeName="" description="Configuration table to store the components core manager" isMultiRow="true" name="ComponentManager" ordinal="0">
                     <DataShape>
                         <FieldDefinitions>
-                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="unique identifier for the manager that needs to be configured" name="id" ordinal="1"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="THINGNAME" description="Name of the Manager Thing to be configured" name="managerThingName" ordinal="2"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="unique identifier for the manager that needs to be configured" name="id" ordinal="1" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="THINGNAME" description="Name of the Manager Thing to be configured" name="managerThingName" ordinal="2" />
                         </FieldDefinitions>
                     </DataShape>
                     <Rows>
@@ -40,33 +41,20 @@
                 <ConfigurationTable dataShapeName="" description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1" isMultiRow="true" name="ToolsConfiguration" ordinal="1">
                     <DataShape>
                         <FieldDefinitions>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="7"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="5"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="10"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="8"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="11"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="4"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="2"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="3"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="6"></FieldDefinition>
-                            <FieldDefinition aspect.dataShape="MCPToolAnnotations" aspect.isPrimaryKey="false" baseType="INFOTABLE" description="" name="toolAnnotations" ordinal="9"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1"></FieldDefinition>
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="7" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="5" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="10" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="8" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="11" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="4" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="2" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="3" />
+                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="6" />
+                            <FieldDefinition aspect.dataShape="MCPToolAnnotations" aspect.isPrimaryKey="false" baseType="INFOTABLE" description="" name="toolAnnotations" ordinal="9" />
+                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1" />
                         </FieldDefinitions>
                     </DataShape>
                     <Rows>
-                        <Row>
-                            <toolName><![CDATA[Test]]></toolName>
-                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
-                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
-                            <serviceName><![CDATA[Test]]></serviceName>
-                            <description><![CDATA[]]></description>
-                            <title><![CDATA[Test]]></title>
-                            <applicationName><![CDATA[VPS.Development.MCP]]></applicationName>
-                            <meta><![CDATA[{}]]></meta>
-                            <toolAnnotations><![CDATA[{}]]></toolAnnotations>
-                            <inputSchema><![CDATA[{"type":"object","properties":{"Test":{"type":"string"}},"required":["Test"]}]]></inputSchema>
-                            <outputSchema><![CDATA[{"type":"null"}]]></outputSchema>
-                        </Row>
                         <Row>
                             <toolName><![CDATA[ImportEntityZip]]></toolName>
                             <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
@@ -75,31 +63,44 @@
                             <description><![CDATA[Uploads a base64-encoded zip of ThingWorx entity XML into SystemRepository, extracts it, and imports the entities into the running server.]]></description>
                             <title><![CDATA[ImportEntityZip]]></title>
                             <applicationName><![CDATA[VPS.Development.MCP]]></applicationName>
-                            <meta><![CDATA[{}]]></meta>
-                            <toolAnnotations><![CDATA[{}]]></toolAnnotations>
-                            <inputSchema><![CDATA[{"type":"object","properties":{"zipContent":{"type":"string"},"fileName":{"type":"string"},"folderName":{"type":"string"}},"required":["zipContent","fileName","folderName"]}]]></inputSchema>
-                            <outputSchema><![CDATA[{"type":"string"}]]></outputSchema>
+                            <meta>
+                                <json><![CDATA[{}]]></json>
+                            </meta>
+                            <toolAnnotations>
+                                <infoTable>
+                                    <DataShape>
+                                        <FieldDefinitions />
+                                    </DataShape>
+                                    <Rows />
+                                </infoTable>
+                            </toolAnnotations>
+                            <inputSchema>
+                                <json><![CDATA[{"type":"object","properties":{"zipContent":{"type":"string"},"fileName":{"type":"string"},"folderName":{"type":"string"}},"required":["zipContent","fileName","folderName"]}]]></json>
+                            </inputSchema>
+                            <outputSchema>
+                                <json><![CDATA[{"type":"string"}]]></json>
+                            </outputSchema>
                         </Row>
                     </Rows>
                 </ConfigurationTable>
             </ConfigurationTables>
             <ThingShape>
-                <PropertyDefinitions></PropertyDefinitions>
+                <PropertyDefinitions />
                 <ServiceDefinitions>
                     <ServiceDefinition aspect.isAsync="false" category="" description="Reads the ToolsConfiguration table and registers each row as an MCP tool via Resources[&quot;MCPServices&quot;].AddTools." isAllowOverride="false" isLocalOnly="false" isOpen="false" isPrivate="false" name="RegisterTools">
-                        <ResultType baseType="NOTHING" description="" name="result" ordinal="0"></ResultType>
-                        <ParameterDefinitions></ParameterDefinitions>
+                        <ResultType baseType="NOTHING" description="" name="result" ordinal="0" />
+                        <ParameterDefinitions />
                     </ServiceDefinition>
                 </ServiceDefinitions>
-                <EventDefinitions></EventDefinitions>
-                <ServiceMappings></ServiceMappings>
+                <EventDefinitions />
+                <ServiceMappings />
                 <ServiceImplementations>
                     <ServiceImplementation description="" handlerName="Script" name="RegisterTools">
                         <ConfigurationTables>
                             <ConfigurationTable dataShapeName="" description="" isMultiRow="false" name="Script" ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
-                                        <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
+                                        <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0" />
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
@@ -127,7 +128,7 @@
                                 <ConfigurationTable dataShapeName="" description="" isMultiRow="false" name="Script" ordinal="0">
                                     <DataShape>
                                         <FieldDefinitions>
-                                            <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
+                                            <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0" />
                                         </FieldDefinitions>
                                     </DataShape>
                                     <Rows>
@@ -141,18 +142,44 @@
                             </ConfigurationTables>
                         </ServiceImplementation>
                         <Events>
-                            <Event alias="Me_ThingStart" eventName="ThingStart" source="" sourceProperty="" sourceType="Thing"></Event>
+                            <Event alias="Me_ThingStart" eventName="ThingStart" source="" sourceProperty="" sourceType="Thing" />
                         </Events>
                     </Subscription>
                 </Subscriptions>
             </ThingShape>
-            <PropertyBindings></PropertyBindings>
-            <RemotePropertyBindings></RemotePropertyBindings>
-            <RemoteServiceBindings></RemoteServiceBindings>
-            <RemoteEventBindings></RemoteEventBindings>
-            <AlertConfigurations></AlertConfigurations>
-            <ImplementedShapes></ImplementedShapes>
-            <ThingProperties></ThingProperties>
+            <PropertyBindings />
+            <RemotePropertyBindings />
+            <RemoteServiceBindings />
+            <RemoteEventBindings />
+            <AlertConfigurations />
+            <ImplementedShapes />
+            <ThingProperties />
+            <ConfigurationChanges>
+                <ConfigurationChange changeAction="CREATE" changeReason="Thing VPS.Development.MCP.EntryPoint created programatically" timestamp="2026-07-15T02:55:20.912Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="SetProjectName : [PTCDefaultProject]" timestamp="2026-07-15T02:55:20.919Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="EnableThing" timestamp="2026-07-15T02:55:21.015Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="Project Name Modified" timestamp="2026-07-15T02:55:21.026Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="SetConfigurationTable" timestamp="2026-07-15T02:55:21.100Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="AddVisibilityPermission" timestamp="2026-07-15T02:55:21.295Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="AddVisibilityPermission" timestamp="2026-07-15T02:55:21.296Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T03:13:21.850Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="subscriptions : AddToolsOnStart : added&#xA;" timestamp="2026-07-15T04:41:33.538Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T15:19:22.793Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T15:41:53.671Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T15:42:15.089Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="services : RegisterTools : service updated&#xA;" timestamp="2026-07-15T15:42:57.529Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="configuration : Dummy : added&#xA;" timestamp="2026-07-15T15:55:28.498Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T16:58:36.679Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="configuration : ComponentManager : removed, ToolsConfiguration : removed&#xA;" timestamp="2026-07-15T17:00:55.793Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="configuration : ComponentManager : updated&#xA;" timestamp="2026-07-15T17:02:58.611Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="services : Test : service added&#xA;" timestamp="2026-07-15T18:15:45.167Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="services : Test : output updated&#xA;" timestamp="2026-07-15T18:16:07.446Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="services : Test : output updated&#xA;" timestamp="2026-07-15T18:16:22.484Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="configuration : ToolsConfiguration : updated&#xA;" timestamp="2026-07-15T18:16:40.967Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T19:13:22.967Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="" timestamp="2026-07-15T19:20:36.906Z" user="Administrator" />
+                <ConfigurationChange changeAction="MODIFY" changeReason="configuration : ToolsConfiguration : updated&#xA;" timestamp="2026-07-15T19:33:08.962Z" user="Administrator" />
+            </ConfigurationChanges>
         </Thing>
     </Things>
 </Entities>
