@@ -133,12 +133,9 @@
 
     var zipPath = folderName + "/" + fileName;
 
-    var decodedBytes = Packages.java.util.Base64.getDecoder().decode(zipContent);
-    var zipContentStream = new Packages.java.io.ByteArrayInputStream(decodedBytes);
-
     Things["SystemRepository"].SaveBinary({
         path: zipPath,
-        content: zipContentStream
+        content: zipContent
     });
 
     Things["SystemRepository"].ExtractZipArchive({
