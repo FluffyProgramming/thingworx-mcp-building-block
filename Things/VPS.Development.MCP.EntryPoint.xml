@@ -62,7 +62,7 @@
                             <serviceName><![CDATA[ImportEntityZip]]></serviceName>
                             <description><![CDATA[Uploads a base64-encoded zip of ThingWorx entity XML into SystemRepository, extracts it, and imports the entities into the running server.]]></description>
                             <title><![CDATA[ImportEntityZip]]></title>
-                            <applicationName><![CDATA[VPS.Development.MCP]]></applicationName>
+                            <applicationName><![CDATA[ThingWorx]]></applicationName>
                             <meta>
                                 <json><![CDATA[{}]]></json>
                             </meta>
@@ -107,10 +107,13 @@
                                     <Row>
                                         <code><![CDATA[
                                         try {
-                                            Resources["MCPServices"].AddTools({
-                                                toolInfo: me.ToolsConfiguration
+                                            let table = me.GetConfigurationTable({
+                                                tableName: "ToolsConfiguration"
                                             });
-                                            logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + me.ToolsConfiguration.rows.length + " tool(s).");
+                                            Resources["MCPServices"].AddTools({
+                                                toolInfo: table
+                                            });
+                                            logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + table.rows.length + " tool(s).");
                                         } catch (err) {
                                             logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
                                         }
