@@ -36,17 +36,73 @@
             <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
             <ConfigurationTables></ConfigurationTables>
             <FieldDefinitions>
-                <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="0"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="1"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="2"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="3"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="4"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="5"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="6"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="7"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="toolAnnotations" ordinal="8"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="9"></FieldDefinition>
-                <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="10"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="STRING"
+                 description=""
+                 name="applicationName"
+                 ordinal="6"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="STRING"
+                 description=""
+                 name="description"
+                 ordinal="4"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="JSON"
+                 description=""
+                 name="inputSchema"
+                 ordinal="9"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="JSON"
+                 description=""
+                 name="meta"
+                 ordinal="7"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="JSON"
+                 description=""
+                 name="outputSchema"
+                 ordinal="10"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="STRING"
+                 description=""
+                 name="serviceName"
+                 ordinal="3"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="STRING"
+                 description=""
+                 name="serviceProviderName"
+                 ordinal="1"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="STRING"
+                 description=""
+                 name="serviceProviderType"
+                 ordinal="2"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="false"
+                 baseType="STRING"
+                 description=""
+                 name="title"
+                 ordinal="5"></FieldDefinition>
+                <FieldDefinition
+                 aspect.dataShape="MCPToolAnnotations"
+                 aspect.isPrimaryKey="false"
+                 baseType="INFOTABLE"
+                 description=""
+                 name="toolAnnotations"
+                 ordinal="8"></FieldDefinition>
+                <FieldDefinition
+                 aspect.isPrimaryKey="true"
+                 baseType="STRING"
+                 description=""
+                 name="toolName"
+                 ordinal="0"></FieldDefinition>
             </FieldDefinitions>
         </DataShape>
     </DataShapes>

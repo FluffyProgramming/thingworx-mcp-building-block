@@ -40,26 +40,7 @@
                      type="OrganizationalUnit"></Principal>
                 </Visibility>
             </VisibilityPermissions>
-            <ConfigurationTableDefinitions>
-                <ConfigurationTableDefinition
-                 category=""
-                 dataShapeName="VPS.Development.MCP.ComponentManager_DS"
-                 description="Configuration table to store the components core manager"
-                 isHidden="false"
-                 isMultiRow="true"
-                 name="ComponentManager"
-                 ordinal="0"
-                 source="IMPORT"></ConfigurationTableDefinition>
-                <ConfigurationTableDefinition
-                 category=""
-                 dataShapeName="VPS.Development.MCP.ToolsConfiguration_DS"
-                 description="MCP tool registrations, generated from Management_TS's ServiceDefinitions by scripts/Build.ps1"
-                 isHidden="false"
-                 isMultiRow="true"
-                 name="ToolsConfiguration"
-                 ordinal="1"
-                 source="IMPORT"></ConfigurationTableDefinition>
-            </ConfigurationTableDefinitions>
+            <ConfigurationTableDefinitions></ConfigurationTableDefinitions>
             <ConfigurationTables>
                 <ConfigurationTable
                  dataShapeName=""
@@ -85,8 +66,16 @@
                     </DataShape>
                     <Rows>
                         <Row>
-                            <id><![CDATA[ComponentManager]]></id>
-                            <managerThingName><![CDATA[VPS.Development.MCP.Manager]]></managerThingName>
+                            <id>
+                            <![CDATA[
+                            ComponentManager
+                            ]]>
+                            </id>
+                            <managerThingName>
+                            <![CDATA[
+                            VPS.Development.MCP.Manager
+                            ]]>
+                            </managerThingName>
                         </Row>
                     </Rows>
                 </ConfigurationTable>
@@ -98,17 +87,73 @@
                  ordinal="1">
                     <DataShape>
                         <FieldDefinitions>
-                            <FieldDefinition aspect.isPrimaryKey="true" baseType="STRING" description="" name="toolName" ordinal="1"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderName" ordinal="2"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceProviderType" ordinal="3"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="serviceName" ordinal="4"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="description" ordinal="5"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="title" ordinal="6"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="STRING" description="" name="applicationName" ordinal="7"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="meta" ordinal="8"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="toolAnnotations" ordinal="9"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="inputSchema" ordinal="10"></FieldDefinition>
-                            <FieldDefinition aspect.isPrimaryKey="false" baseType="JSON" description="" name="outputSchema" ordinal="11"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="STRING"
+                             description=""
+                             name="applicationName"
+                             ordinal="7"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="STRING"
+                             description=""
+                             name="description"
+                             ordinal="5"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="JSON"
+                             description=""
+                             name="inputSchema"
+                             ordinal="10"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="JSON"
+                             description=""
+                             name="meta"
+                             ordinal="8"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="JSON"
+                             description=""
+                             name="outputSchema"
+                             ordinal="11"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="STRING"
+                             description=""
+                             name="serviceName"
+                             ordinal="4"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="STRING"
+                             description=""
+                             name="serviceProviderName"
+                             ordinal="2"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="STRING"
+                             description=""
+                             name="serviceProviderType"
+                             ordinal="3"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="false"
+                             baseType="STRING"
+                             description=""
+                             name="title"
+                             ordinal="6"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.dataShape="MCPToolAnnotations"
+                             aspect.isPrimaryKey="false"
+                             baseType="INFOTABLE"
+                             description=""
+                             name="toolAnnotations"
+                             ordinal="9"></FieldDefinition>
+                            <FieldDefinition
+                             aspect.isPrimaryKey="true"
+                             baseType="STRING"
+                             description=""
+                             name="toolName"
+                             ordinal="1"></FieldDefinition>
                         </FieldDefinitions>
                     </DataShape>
                     <Rows></Rows>
@@ -150,19 +195,27 @@
                              ordinal="0">
                                 <DataShape>
                                     <FieldDefinitions>
-                                        <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
+                                        <FieldDefinition
+                                         baseType="STRING"
+                                         description="code"
+                                         name="code"
+                                         ordinal="0"></FieldDefinition>
                                     </FieldDefinitions>
                                 </DataShape>
                                 <Rows>
                                     <Row>
-                                        <code><![CDATA[try {
-    Resources["MCPServices"].AddTools({
-        toolInfo: me.ToolsConfiguration
-    });
-    logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + me.ToolsConfiguration.rows.length + " tool(s).");
-} catch (err) {
-    logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
-}]]></code>
+                                        <code>
+                                        <![CDATA[
+                                        try {
+                                            Resources["MCPServices"].AddTools({
+                                                toolInfo: me.ToolsConfiguration
+                                            });
+                                            logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + me.ToolsConfiguration.rows.length + " tool(s).");
+                                        } catch (err) {
+                                            logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
+                                        }
+                                        ]]>
+                                        </code>
                                     </Row>
                                 </Rows>
                             </ConfigurationTable>
@@ -189,12 +242,20 @@
                                  ordinal="0">
                                     <DataShape>
                                         <FieldDefinitions>
-                                            <FieldDefinition baseType="STRING" description="code" name="code" ordinal="0"></FieldDefinition>
+                                            <FieldDefinition
+                                             baseType="STRING"
+                                             description="code"
+                                             name="code"
+                                             ordinal="0"></FieldDefinition>
                                         </FieldDefinitions>
                                     </DataShape>
                                     <Rows>
                                         <Row>
-                                            <code><![CDATA[me.RegisterTools();]]></code>
+                                            <code>
+                                            <![CDATA[
+                                            me.RegisterTools();
+                                            ]]>
+                                            </code>
                                         </Row>
                                     </Rows>
                                 </ConfigurationTable>
