@@ -110,6 +110,3 @@ Build output lands in `dist/VPS.Development.MCP-extension-<version>.zip`.
 ## Requirements
 
 - ThingWorx 10.1+
-- No dependency on PTC's Solution Framework — entities use
-  `baseThingTemplate="GenericThing"`, so this imports cleanly into any
-  ThingWorx 10.1 system.
