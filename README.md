@@ -36,15 +36,26 @@ Resources["MCPServices"].AddTools(toolInfo: <InfoTable>)
   `Management_TS`'s current `ServiceDefinition`s and packages the whole thing
   into an importable ThingWorx extension zip.
 
-## What's included
+## Current tools
 
-The extension currently ships one working MCP tool as a reference
-implementation:
+### `ImportEntityZip`
 
-- **`ImportEntityZip`** — uploads a base64-encoded zip of ThingWorx
-  source-control entity XML into `SystemRepository`, extracts it, and
-  imports the entities into the running server. Lets an MCP-connected agent
-  push entity changes straight into a live ThingWorx instance in one call.
+Uploads a base64-encoded zip of ThingWorx source-control entity XML into
+`SystemRepository`, extracts it, and imports the entities into the running
+server — upload, extract, and import in a single call.
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `zipContent` | string | yes | Base64-encoded bytes of the zip. The zip must use source-control layout — entity-type folders (`DataShapes/`, `Things/`, etc.) directly at the zip root, forward-slash entry paths. |
+| `fileName` | string | yes | Name to give the uploaded file, e.g. `"VPS.zip"`. |
+| `folderName` | string | yes | Subfolder under the `SystemRepository` root to upload/extract/import into, e.g. `"vps"`. Rejected if empty or containing `..`, `/`, or `\`. |
+
+| Output | Type | Description |
+|---|---|---|
+| `result` | string | Human-readable summary of what was imported. On failure, the service throws instead of returning a value. |
+
+Implemented on `Management_TS` (inherited by any `Thing` that implements the
+shape, e.g. `Manager`).
 
 ## Repository layout
 
@@ -57,7 +68,6 @@ Things/               Thing entity XML (EntryPoint, Manager)
 ThingShapes/           ThingShape entity XML (Management_TS)
 ThingTemplates/         ThingTemplate entity XML
 scripts/                 PowerShell build pipeline + Pester tests
-docs/                     Design docs and implementation plans
 ```
 
 Entity XML files are the source of truth — they're hand-authored/edited
