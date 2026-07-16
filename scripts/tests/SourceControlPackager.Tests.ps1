@@ -6,6 +6,8 @@ function New-FixtureRepo {
     $repoRoot = Join-Path ([System.IO.Path]::GetTempPath()) ("vps-scp-test-" + [guid]::NewGuid())
     New-Item -ItemType Directory -Path (Join-Path $repoRoot 'Things') -Force | Out-Null
     Set-Content -Path (Join-Path $repoRoot 'Things/Fixture.Thing.xml') -Value '<Entities>Thing</Entities>'
+    New-Item -ItemType Directory -Path (Join-Path $repoRoot 'Things/Sub') -Force | Out-Null
+    Set-Content -Path (Join-Path $repoRoot 'Things/Sub/Nested.Thing.xml') -Value '<Entities>NestedThing</Entities>'
     New-Item -ItemType Directory -Path (Join-Path $repoRoot 'DataShapes') -Force | Out-Null
     Set-Content -Path (Join-Path $repoRoot 'DataShapes/Fixture.DataShape.xml') -Value '<Entities>DataShape</Entities>'
     New-Item -ItemType Directory -Path (Join-Path $repoRoot 'scripts') -Force | Out-Null
@@ -46,6 +48,7 @@ Test-Case 'New-SourceControlZip writes forward-slash entry paths with entity fol
 
         Assert-Contains -Collection $entryNames -Item 'Things/Fixture.Thing.xml'
         Assert-Contains -Collection $entryNames -Item 'DataShapes/Fixture.DataShape.xml'
+        Assert-Contains -Collection $entryNames -Item 'Things/Sub/Nested.Thing.xml'
         foreach ($name in $entryNames) {
             Assert-True -Condition ($name -notmatch '\\') -Message "entry '$name' should not contain a backslash"
         }
