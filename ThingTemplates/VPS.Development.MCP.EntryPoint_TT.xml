@@ -7,7 +7,7 @@
         <ThingTemplate
          aspect.isSystemObject="false"
          baseThingTemplate="GenericThing"
-         description="Velotic Professional Services MCP services to help with AI development."
+         description="MCP services to help with AI development."
          documentationContent=""
          effectiveThingPackage="ConfiguredThing"
          homeMashup=""

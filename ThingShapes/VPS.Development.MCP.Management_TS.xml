@@ -7,7 +7,7 @@
         <ThingShape
          aspect.isSystemObject="false"
          className=""
-         description="Velotic Professional Services MCP services to help with AI development."
+         description="MCP services to help with AI development."
          documentationContent=""
          homeMashup=""
          name="VPS.Development.MCP.Management_TS"
