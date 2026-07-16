@@ -109,10 +109,33 @@
     let table = me.GetConfigurationTable({
         tableName: "ToolsConfiguration"
     });
-    Resources["MCPServices"].AddTools({
-        toolInfo: table
+
+    let toolInfo = Resources["InfoTableFunctions"].CreateInfoTableFromDataShape({
+        infoTableName: "InfoTable",
+        dataShapeName: "MCPTool"
     });
-    logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + table.rows.length + " tool(s).");
+
+    for (let i = 0; i < table.rows.length; i++) {
+        let row = table.rows[i];
+        toolInfo.AddRow({
+            toolName: row.toolName,
+            serviceProvider: row.serviceProviderName,
+            serviceProviderType: row.serviceProviderType,
+            serviceName: row.serviceName,
+            description: row.description,
+            title: row.title,
+            appName: row.applicationName,
+            meta: row.meta,
+            annotations: row.toolAnnotations,
+            inputSchema: row.inputSchema,
+            outputSchema: row.outputSchema
+        });
+    }
+
+    Resources["MCPServices"].AddTools({
+        toolInfo: toolInfo
+    });
+    logger.info("VPS.Development.MCP.EntryPoint.RegisterTools: registered " + toolInfo.rows.length + " tool(s).");
 } catch (err) {
     logger.error("VPS.Development.MCP.EntryPoint.RegisterTools failed: " + err.message);
 }]]></code>
