@@ -18,6 +18,7 @@ This MCP building block closes that loop. Each tool below maps to one step of th
 ## 2. Current state
 
 - **`ImportEntityZip`** (built): accepts a source-control zip of entities as base64, saves it to a FileRepository, extracts it, and imports the entities into the system. This is the gateway action and the foundation the rest build on.
+- **Local build/package tooling** (built): `scripts/PackageSourceControlZip.ps1` + `scripts/lib/SourceControlPackager.psm1` regenerate `ToolsConfiguration` and package this repo's entity folders into an `ImportEntityZip`-ready zip, base64-encoded, written to `dist/`. See design doc: `docs/superpowers/specs/2026-07-16-source-control-packaging-design.md`. The Claude Code skill that chains this to an `ImportEntityZip` call (with a confirmation prompt first) is still open — see Section 7.
 
 ---
 
