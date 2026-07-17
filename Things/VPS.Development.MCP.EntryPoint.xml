@@ -81,6 +81,32 @@
                                 <json><![CDATA[{"type":"string"}]]></json>
                             </outputSchema>
                         </Row>
+                        <Row>
+                            <toolName><![CDATA[ExecuteService]]></toolName>
+                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
+                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
+                            <serviceName><![CDATA[ExecuteService]]></serviceName>
+                            <description><![CDATA[Calls a service on any Thing with the given params and returns a structured JSON result. Never throws; failures are reported via the returned success/error fields.]]></description>
+                            <title><![CDATA[ExecuteService]]></title>
+                            <applicationName><![CDATA[ThingWorx]]></applicationName>
+                            <meta>
+                                <json><![CDATA[{}]]></json>
+                            </meta>
+                            <toolAnnotations>
+                                <infoTable>
+                                    <DataShape>
+                                        <FieldDefinitions />
+                                    </DataShape>
+                                    <Rows />
+                                </infoTable>
+                            </toolAnnotations>
+                            <inputSchema>
+                                <json><![CDATA[{"type":"object","properties":{"thingName":{"type":"string"},"serviceName":{"type":"string"},"params":{"type":"object"}},"required":["thingName","serviceName","params"]}]]></json>
+                            </inputSchema>
+                            <outputSchema>
+                                <json><![CDATA[{"type":"object"}]]></json>
+                            </outputSchema>
+                        </Row>
                     </Rows>
                 </ConfigurationTable>
             </ConfigurationTables>
