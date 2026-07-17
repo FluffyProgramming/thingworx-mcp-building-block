@@ -3,7 +3,8 @@ param(
     [string] $RepoRoot,
     [string] $OutputDirectory,
     [string] $FileName,
-    [string] $FolderName
+    [string] $FolderName,
+    [switch] $ChangedOnly
 )
 
 if (-not $RepoRoot) {
@@ -49,8 +50,14 @@ if (-not (Test-Path $OutputDirectory)) {
 $outputPath = Join-Path $OutputDirectory $FileName
 
 Write-Host "Packaging source-control zip $outputPath ..."
-$result = New-SourceControlZip -RepoRoot $RepoRoot -OutputPath $outputPath
-Write-Host "Entity folders included: $($result.EntityFolders -join ', ')"
+if ($ChangedOnly) {
+    $changedFiles = Get-ChangedEntityFiles -RepoRoot $RepoRoot
+    $result = New-SourceControlZip -RepoRoot $RepoRoot -OutputPath $outputPath -Files $changedFiles
+    Write-Host "Changed files included: $($changedFiles -join ', ')"
+} else {
+    $result = New-SourceControlZip -RepoRoot $RepoRoot -OutputPath $outputPath
+    Write-Host "Entity folders included: $($result.EntityFolders -join ', ')"
+}
 Write-Host "Zip:    $($result.ZipPath)"
 Write-Host "Base64: $($result.Base64Path)"
 Write-Host "For ImportEntityZip -> fileName: '$FileName'  folderName: '$FolderName'"
