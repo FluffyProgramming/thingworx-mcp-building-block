@@ -79,6 +79,58 @@
                          ordinal="3"></FieldDefinition>
                     </ParameterDefinitions>
                 </ServiceDefinition>
+                <ServiceDefinition
+                 aspect.isAsync="false"
+                 category=""
+                 description="Returns application/script log entries from the live server, optionally filtered by time window, level, and search text. Read-only; throws on failure (e.g. an invalid logName)."
+                 isAllowOverride="false"
+                 isLocalOnly="false"
+                 isOpen="false"
+                 isPrivate="false"
+                 name="GetLogEntries">
+                    <ResultType
+                     baseType="JSON"
+                     description=""
+                     name="result"
+                     ordinal="0"></ResultType>
+                    <ParameterDefinitions>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Which log to query: ApplicationLog, CommunicationLog, ConfigurationLog, ScriptLog, or SecurityLog. Defaults to ApplicationLog if omitted."
+                         name="logName"
+                         ordinal="1"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="NUMBER"
+                         description="Return entries from this many minutes ago through now. Ignored if startTime/endTime are given."
+                         name="sinceMinutes"
+                         ordinal="2"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Explicit ISO 8601 start of the time window. Takes precedence over sinceMinutes if given."
+                         name="startTime"
+                         ordinal="3"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Explicit ISO 8601 end of the time window. Takes precedence over sinceMinutes if given."
+                         name="endTime"
+                         ordinal="4"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Plain substring to search for in log message content."
+                         name="search"
+                         ordinal="5"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Filter to exactly this level: ERROR, WARN, INFO, or DEBUG (case-insensitive). Omit for no level filtering."
+                         name="level"
+                         ordinal="6"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="NUMBER"
+                         description="Maximum rows to return. Defaults to 50, clamped to a maximum of 200."
+                         name="maxRows"
+                         ordinal="7"></FieldDefinition>
+                    </ParameterDefinitions>
+                </ServiceDefinition>
             </ServiceDefinitions>
             <EventDefinitions></EventDefinitions>
             <ServiceMappings></ServiceMappings>
@@ -215,6 +267,101 @@ try {
         executionTimeMs: Date.now() - startTime,
         error: err.message
     };
+}]]></code>
+                                </Row>
+                            </Rows>
+                        </ConfigurationTable>
+                    </ConfigurationTables>
+                </ServiceImplementation>
+                <ServiceImplementation
+                 description=""
+                 handlerName="Script"
+                 name="GetLogEntries">
+                    <ConfigurationTables>
+                        <ConfigurationTable
+                         dataShapeName=""
+                         description=""
+                         isMultiRow="false"
+                         name="Script"
+                         ordinal="0">
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     baseType="STRING"
+                                     description="code"
+                                     name="code"
+                                     ordinal="0"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows>
+                                <Row>
+                                    <code><![CDATA[try {
+    var effectiveLogName = logName || "ApplicationLog";
+
+    var effectiveStartDate = null;
+    var effectiveEndDate = null;
+    if (startTime || endTime) {
+        effectiveStartDate = startTime || null;
+        effectiveEndDate = endTime || null;
+    } else if (sinceMinutes) {
+        var nowMs = Date.now();
+        effectiveStartDate = new Date(nowMs - (sinceMinutes * 60000)).toISOString();
+        effectiveEndDate = new Date(nowMs).toISOString();
+    }
+
+    var effectiveMaxItems = maxRows || 50;
+    if (effectiveMaxItems < 1) {
+        effectiveMaxItems = 1;
+    } else if (effectiveMaxItems > 200) {
+        effectiveMaxItems = 200;
+    }
+
+    var effectiveSearchExpression = null;
+    if (search) {
+        effectiveSearchExpression = (search.indexOf("*") === -1) ? ("*" + search + "*") : search;
+    }
+
+    var retrieveParams = {
+        logName: effectiveLogName,
+        maxItems: effectiveMaxItems
+    };
+    if (effectiveStartDate) {
+        retrieveParams.startDate = effectiveStartDate;
+    }
+    if (effectiveEndDate) {
+        retrieveParams.endDate = effectiveEndDate;
+    }
+    if (effectiveSearchExpression) {
+        retrieveParams.searchExpression = effectiveSearchExpression;
+    }
+
+    var logResult = Things["DefaultLogRetrievalStrategyThing"].RetrieveLogs(retrieveParams);
+
+    var rows = [];
+    for (var i = 0; i < logResult.rows.length; i++) {
+        rows.push(logResult.rows[i]);
+    }
+
+    if (level) {
+        var upperLevel = level.toUpperCase();
+        rows = rows.filter(function (row) {
+            return row.level && row.level.toUpperCase() === upperLevel;
+        });
+    }
+
+    result = rows.map(function (row) {
+        var ts = row.timestamp;
+        var isoTimestamp = (ts instanceof Date) ? ts.toISOString() : new Date(ts).toISOString();
+        return {
+            timestamp: isoTimestamp,
+            level: row.level,
+            source: row.origin,
+            message: row.content
+        };
+    });
+} catch (err) {
+    logger.error("VPS.Development.MCP.Management_TS.GetLogEntries failed: " + err.message);
+    throw err;
 }]]></code>
                                 </Row>
                             </Rows>
