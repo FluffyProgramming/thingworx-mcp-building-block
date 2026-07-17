@@ -181,7 +181,13 @@ try {
         throw new Error("Service '" + serviceName + "' does not exist on Thing '" + thingName + "'");
     }
 
-    var rawResult = Things[thingName][serviceName](params || {});
+    var callParams = params ? JSON.parse(JSON.stringify(params)) : {};
+    var hasParams = false;
+    for (var key in callParams) {
+        hasParams = true;
+        break;
+    }
+    var rawResult = hasParams ? Things[thingName][serviceName](callParams) : Things[thingName][serviceName]();
 
     var serializedResult;
     if (rawResult && typeof rawResult.ToJSON === "function") {
