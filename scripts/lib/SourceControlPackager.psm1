@@ -9,14 +9,17 @@ function New-SourceControlZip {
     Add-Type -AssemblyName System.IO.Compression -ErrorAction SilentlyContinue
     Add-Type -AssemblyName System.IO.Compression.FileSystem -ErrorAction SilentlyContinue
 
-    if ($Files) {
-        foreach ($file in $Files) {
+    if ($PSBoundParameters.ContainsKey('Files')) {
+        $filesToZip = @($Files)
+        if ($filesToZip.Count -eq 0) {
+            throw "New-SourceControlZip: no files given via -Files."
+        }
+        foreach ($file in $filesToZip) {
             $fullPath = Join-Path $RepoRoot $file
             if (-not (Test-Path $fullPath)) {
                 throw "New-SourceControlZip: file not found: $file"
             }
         }
-        $filesToZip = @($Files)
         $entityFolders = @($filesToZip | ForEach-Object { ($_ -split '/')[0] } | Select-Object -Unique)
     } else {
         $entityFolders = Get-ChildItem -Path $RepoRoot -Directory |
@@ -88,8 +91,9 @@ function Get-ChangedEntityFiles {
     $allChanged = @($modified + $untracked | Select-Object -Unique)
 
     $changedFiles = @($allChanged | Where-Object {
-        $topFolder = ($_ -split '/')[0]
-        ($ExcludeFolders -notcontains $topFolder) -and (Test-Path (Join-Path $RepoRoot $_))
+        ($_ -match '/') -and
+        ($ExcludeFolders -notcontains ($_ -split '/')[0]) -and
+        (Test-Path (Join-Path $RepoRoot $_))
     })
 
     if ($changedFiles.Count -eq 0) {

@@ -29,6 +29,7 @@ function New-GitFixtureRepo {
     Set-Content -Path (Join-Path $repoRoot 'ThingShapes/ToDelete.ThingShape.xml') -Value '<Entities>ToDelete</Entities>'
     New-Item -ItemType Directory -Path (Join-Path $repoRoot 'scripts') -Force | Out-Null
     Set-Content -Path (Join-Path $repoRoot 'scripts/Build.ps1') -Value 'not an entity'
+    Set-Content -Path (Join-Path $repoRoot 'README.md') -Value 'root file'
 
     git -C $repoRoot add -A | Out-Null
     git -C $repoRoot -c user.name=test -c user.email=test@test.com commit -m "initial" --quiet | Out-Null
@@ -142,6 +143,21 @@ Test-Case 'Get-ChangedEntityFiles throws when changes exist but only in excluded
     }
 }
 
+Test-Case 'Get-ChangedEntityFiles excludes changed top-level files with no folder component' {
+    $repoRoot = New-GitFixtureRepo
+    try {
+        Set-Content -Path (Join-Path $repoRoot 'Things/Existing.Thing.xml') -Value '<Entities>Modified</Entities>'
+        Set-Content -Path (Join-Path $repoRoot 'README.md') -Value 'root file modified'
+
+        $changed = Get-ChangedEntityFiles -RepoRoot $repoRoot
+
+        Assert-Contains -Collection $changed -Item 'Things/Existing.Thing.xml'
+        Assert-True -Condition ($changed -notcontains 'README.md') -Message 'top-level file with no folder component should not be included'
+    } finally {
+        Remove-Item -Path $repoRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
 Test-Case 'New-SourceControlZip -Files zips exactly the given files with forward-slash entries' {
     $repoRoot = New-FixtureRepo
     try {
@@ -168,6 +184,16 @@ Test-Case 'New-SourceControlZip -Files throws when a given file does not exist' 
     try {
         $zipPath = Join-Path $repoRoot 'out.zip'
         Assert-Throws -ScriptBlock { New-SourceControlZip -RepoRoot $repoRoot -OutputPath $zipPath -Files @('Things/DoesNotExist.xml') }
+    } finally {
+        Remove-Item -Path $repoRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+Test-Case 'New-SourceControlZip -Files @() throws instead of falling back to full-tree discovery' {
+    $repoRoot = New-FixtureRepo
+    try {
+        $zipPath = Join-Path $repoRoot 'out.zip'
+        Assert-Throws -ScriptBlock { New-SourceControlZip -RepoRoot $repoRoot -OutputPath $zipPath -Files @() }
     } finally {
         Remove-Item -Path $repoRoot -Recurse -Force -ErrorAction SilentlyContinue
     }
