@@ -132,6 +132,16 @@ Test-Case 'Get-ChangedEntityFiles throws when nothing has changed' {
     }
 }
 
+Test-Case 'Get-ChangedEntityFiles throws when changes exist but only in excluded folders' {
+    $repoRoot = New-GitFixtureRepo
+    try {
+        Set-Content -Path (Join-Path $repoRoot 'scripts/Build.ps1') -Value 'changed but excluded'
+        Assert-Throws -ScriptBlock { Get-ChangedEntityFiles -RepoRoot $repoRoot }
+    } finally {
+        Remove-Item -Path $repoRoot -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
 Test-Case 'New-SourceControlZip -Files zips exactly the given files with forward-slash entries' {
     $repoRoot = New-FixtureRepo
     try {

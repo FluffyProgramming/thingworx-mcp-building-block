@@ -93,7 +93,10 @@ function Get-ChangedEntityFiles {
     })
 
     if ($changedFiles.Count -eq 0) {
-        throw "Get-ChangedEntityFiles: no changed entity files found under $RepoRoot (working tree matches HEAD)."
+        if ($allChanged.Count -eq 0) {
+            throw "Get-ChangedEntityFiles: no changed entity files found under $RepoRoot (working tree matches HEAD)."
+        }
+        throw "Get-ChangedEntityFiles: no changed entity files found under $RepoRoot (all changes are in excluded folders: $($ExcludeFolders -join ', '))."
     }
 
     return $changedFiles
