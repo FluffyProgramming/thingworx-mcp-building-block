@@ -1,5 +1,7 @@
 *.zip
 .worktrees/
 docs/superpowers/
-.claude/
+!.claude/
+.claude/*
+!.claude/skills/
 dist/
