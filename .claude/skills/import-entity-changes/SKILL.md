@@ -1,6 +1,6 @@
 ---
 name: import-entity-changes
-description: Use when the user asks to import, push, or deploy ThingWorx entity changes (this repo's entity XML) to a live ThingWorx server. Packages changes locally via PackageSourceControlZip.ps1, then confirms before calling ImportEntityZip.
+description: Use when the user asks to import, push, or deploy ThingWorx entity changes (this repo's entity XML) to a live ThingWorx server.
 ---
 
 # Import Entity Changes
