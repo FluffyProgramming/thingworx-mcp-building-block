@@ -40,9 +40,13 @@ exists (large inline base64 payloads have a real, observed corruption risk
 when reproduced as generated tool-call output).
 
 Only drop `-ChangedOnly` (run a full-tree package) if the user's own request
-explicitly asks for everything — words like "everything," "full package,"
-"full import," or "package the whole repo." Absent one of those explicit
-signals, always use `-ChangedOnly`.
+explicitly asks for the whole repo — phrases like "the whole repo,"
+"everything in the repo," "full package," "full import," or "package the
+whole repo." The bare word "everything" on its own is not enough to trigger
+full mode — "import everything I changed" or "push everything that's
+different" both mean changed-files-only scope, not the whole repo, even
+though they contain the word "everything." Absent one of the explicit
+whole-repo phrases above, always use `-ChangedOnly`.
 
 ### 2. Run the script
 
@@ -80,10 +84,11 @@ anything yourself:
 - The suggested `fileName` and `folderName` for `ImportEntityZip`, from a
   line like:
   `For ImportEntityZip -> fileName: 'VPS.Development.MCP.zip'  folderName: 'vps'`
-- The base64 content itself, from the file path the script reports as
-  `Base64Path` (e.g. `dist/VPS.Development.MCP.zip.b64.txt`) — read that
-  file's full contents directly as the `zipContent` value. Do not type it out,
-  summarize it, or regenerate it by hand.
+- The base64 content itself, from the line beginning `Base64:` (e.g.
+  `Base64: dist/VPS.Development.MCP.zip.b64.txt` — this is the script's
+  `Base64Path` result property, though the console line itself is labeled
+  `Base64:`) — read that file's full contents directly as the `zipContent`
+  value. Do not type it out, summarize it, or regenerate it by hand.
 
 ### 5. Confirm before importing
 
@@ -95,7 +100,11 @@ Before calling `ImportEntityZip`, show the user:
 
 Wait for an explicit yes. Any answer that isn't a clear yes (including
 silence, a question back, or an ambiguous reply) means stop — do not call
-`ImportEntityZip`. There is no partial or "importing anyway" path.
+`ImportEntityZip`. There is no partial or "importing anyway" path. A yes
+given before this file list was shown does not count as confirmation —
+always show the concrete list first and wait for a fresh reply to it, even
+if the user already said "yes" or "go ahead" when first asking for the
+import.
 
 ### 6. On yes, call `ImportEntityZip`
 
