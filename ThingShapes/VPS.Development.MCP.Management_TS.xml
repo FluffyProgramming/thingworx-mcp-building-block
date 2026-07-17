@@ -47,6 +47,38 @@
                          ordinal="3"></FieldDefinition>
                     </ParameterDefinitions>
                 </ServiceDefinition>
+                <ServiceDefinition
+                 aspect.isAsync="false"
+                 category=""
+                 description="Calls a service on any Thing with the given params and returns a structured JSON result. Never throws; failures are reported via the returned success/error fields."
+                 isAllowOverride="false"
+                 isLocalOnly="false"
+                 isOpen="false"
+                 isPrivate="false"
+                 name="ExecuteService">
+                    <ResultType
+                     baseType="JSON"
+                     description=""
+                     name="result"
+                     ordinal="0"></ResultType>
+                    <ParameterDefinitions>
+                        <FieldDefinition
+                         baseType="THINGNAME"
+                         description="Name of the Thing to call the service on."
+                         name="thingName"
+                         ordinal="1"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Name of the service to call on that Thing."
+                         name="serviceName"
+                         ordinal="2"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="JSON"
+                         description="Object of parameter name to value to pass to the target service."
+                         name="params"
+                         ordinal="3"></FieldDefinition>
+                    </ParameterDefinitions>
+                </ServiceDefinition>
             </ServiceDefinitions>
             <EventDefinitions></EventDefinitions>
             <ServiceMappings></ServiceMappings>
@@ -106,6 +138,74 @@
 } catch (err) {
     logger.error("VPS.Development.MCP.Management_TS.ImportEntityZip failed: " + err.message);
     throw err;
+}]]></code>
+                                </Row>
+                            </Rows>
+                        </ConfigurationTable>
+                    </ConfigurationTables>
+                </ServiceImplementation>
+                <ServiceImplementation
+                 description=""
+                 handlerName="Script"
+                 name="ExecuteService">
+                    <ConfigurationTables>
+                        <ConfigurationTable
+                         dataShapeName=""
+                         description=""
+                         isMultiRow="false"
+                         name="Script"
+                         ordinal="0">
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     baseType="STRING"
+                                     description="code"
+                                     name="code"
+                                     ordinal="0"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows>
+                                <Row>
+                                    <code><![CDATA[var startTime = Date.now();
+try {
+    if (!thingName) {
+        throw new Error("thingName must not be empty");
+    }
+    if (!serviceName) {
+        throw new Error("serviceName must not be empty");
+    }
+    if (!Things[thingName]) {
+        throw new Error("Thing '" + thingName + "' does not exist");
+    }
+    if (typeof Things[thingName][serviceName] !== "function") {
+        throw new Error("Service '" + serviceName + "' does not exist on Thing '" + thingName + "'");
+    }
+
+    var rawResult = Things[thingName][serviceName](params || {});
+
+    var serializedResult;
+    if (rawResult && typeof rawResult.ToJSON === "function") {
+        serializedResult = rawResult.ToJSON();
+    } else if (rawResult instanceof Date) {
+        serializedResult = rawResult.toISOString();
+    } else {
+        serializedResult = rawResult;
+    }
+
+    result = {
+        success: true,
+        result: serializedResult,
+        executionTimeMs: Date.now() - startTime,
+        error: null
+    };
+} catch (err) {
+    logger.error("VPS.Development.MCP.Management_TS.ExecuteService failed: " + err.message);
+    result = {
+        success: false,
+        result: null,
+        executionTimeMs: Date.now() - startTime,
+        error: err.message
+    };
 }]]></code>
                                 </Row>
                             </Rows>
