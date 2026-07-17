@@ -199,6 +199,8 @@ try {
         serializedResult = rawResult;
     }
 
+    // Probe for non-serializable results here (inside the try) rather than letting the platform's own JSON encoding of the ResultType discover the same failure outside this try/catch.
+    JSON.stringify(serializedResult);
     result = {
         success: true,
         result: serializedResult,
