@@ -181,6 +181,7 @@ try {
         throw new Error("Service '" + serviceName + "' does not exist on Thing '" + thingName + "'");
     }
 
+    // params arrives as a ThingWorx-internal wrapper, not a plain JS object; JSON round-trip strips it, and empty objects must be omitted entirely — passing {} or the wrapper directly causes a platform "Invalid parameter type" error even for zero-param services.
     var callParams = params ? JSON.parse(JSON.stringify(params)) : {};
     var hasParams = false;
     for (var key in callParams) {
