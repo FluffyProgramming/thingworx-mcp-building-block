@@ -57,6 +57,29 @@ server — upload, extract, and import in a single call.
 Implemented on `Management_TS` (inherited by any `Thing` that implements the
 shape, e.g. `Manager`).
 
+### `ExecuteService`
+
+Calls a service on any Thing with the given `params` and returns a
+structured JSON result — never throws, even when the target Thing/service
+doesn't exist or the call itself fails.
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `thingName` | string | yes | Name of the Thing to call the service on. |
+| `serviceName` | string | yes | Name of the service to call on that Thing. |
+| `params` | object | yes | Parameter name → value to pass to the target service. Pass `{}` if it takes none. |
+
+| Output | Type | Description |
+|---|---|---|
+| `result` | object | Always `{ success, result, executionTimeMs, error }`. `result` holds the target service's return value (`InfoTable` rows as an array of objects, dates as ISO strings, scalars as-is); `error` holds a message on failure. Never throws. |
+
+Implemented on `Management_TS`. **Known limitation:** calling a service that
+itself does BLOB/binary parameter handling (e.g. `ImportEntityZip`'s own
+`SaveBinary` call) through `ExecuteService` doesn't currently work —
+ThingWorx's base64-to-BLOB auto-conversion applies to the platform's own
+request-binding path, not to nested script-to-script calls. Ordinary
+scalar/JSON params are unaffected.
+
 ## Repository layout
 
 ```

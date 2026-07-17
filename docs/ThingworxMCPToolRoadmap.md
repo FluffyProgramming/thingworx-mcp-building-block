@@ -19,6 +19,7 @@ This MCP building block closes that loop. Each tool below maps to one step of th
 
 - **`ImportEntityZip`** (built): accepts a source-control zip of entities as base64, saves it to a FileRepository, extracts it, and imports the entities into the system. This is the gateway action and the foundation the rest build on.
 - **Local build/package tooling** (built): `scripts/PackageSourceControlZip.ps1` + `scripts/lib/SourceControlPackager.psm1` regenerate `ToolsConfiguration` and package this repo's entity folders into an `ImportEntityZip`-ready zip, base64-encoded, written to `dist/`. See design doc: `docs/superpowers/specs/2026-07-16-source-control-packaging-design.md`. The Claude Code skill that chains this to an `ImportEntityZip` call (with a confirmation prompt first) is still open — see Section 7.
+- **`ExecuteService`** (built): calls a service on any Thing with given `params` and returns a structured `{success, result, executionTimeMs, error}` JSON result, never throwing. Live-verified against a real ThingWorx server, including a real params-binding bug found and fixed in the process. See design doc: `docs/superpowers/specs/2026-07-16-execute-service-design.md`. Known limitation: chaining into a service that itself does BLOB/binary parameter handling (e.g. `ImportEntityZip`'s own `SaveBinary` call) doesn't work yet — see the design doc's "Known limitations."
 
 ---
 
@@ -26,7 +27,7 @@ This MCP building block closes that loop. Each tool below maps to one step of th
 
 Ranked by how much each would have changed the investigation. Build the core loop first.
 
-1. `ExecuteService` — makes the TEST_ pattern autonomous. Highest value.
+1. `ExecuteService` (built) — makes the TEST_ pattern autonomous. Highest value.
 2. `GetLogEntries` — removes the paste-the-error friction.
 3. `ExportEntities` — kills stale state, enforces export discipline, completes the round trip.
 4. `GetEntityDefinition` — read live entity structure instead of guessing.
@@ -42,7 +43,7 @@ Ranked by how much each would have changed the investigation. Build the core loo
 
 Each tool notes its purpose, inputs, output shape, whether it mutates server state, and the failure mode it removes from the manual loop.
 
-### 4.1 `ExecuteService`  (build first)
+### 4.1 `ExecuteService`  (built)
 
 **Purpose:** Call a service on any Thing with typed inputs and return the result as JSON. This is what makes the TEST_ pattern self-driving: Claude writes a service, imports it, runs its TEST_ harness, sees PASS:/FAIL:, and fixes it without a human in the loop.
 
