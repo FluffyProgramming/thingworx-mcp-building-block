@@ -107,6 +107,32 @@
                                 <json><![CDATA[{"type":"object"}]]></json>
                             </outputSchema>
                         </Row>
+                        <Row>
+                            <toolName><![CDATA[GetLogEntries]]></toolName>
+                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
+                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
+                            <serviceName><![CDATA[GetLogEntries]]></serviceName>
+                            <description><![CDATA[Returns application/script log entries from the live server, optionally filtered by time window, level, and search text. Read-only; throws on failure (e.g. an invalid logName).]]></description>
+                            <title><![CDATA[GetLogEntries]]></title>
+                            <applicationName><![CDATA[ThingWorx]]></applicationName>
+                            <meta>
+                                <json><![CDATA[{}]]></json>
+                            </meta>
+                            <toolAnnotations>
+                                <infoTable>
+                                    <DataShape>
+                                        <FieldDefinitions />
+                                    </DataShape>
+                                    <Rows />
+                                </infoTable>
+                            </toolAnnotations>
+                            <inputSchema>
+                                <json><![CDATA[{"type":"object","properties":{"logName":{"type":"string"},"sinceMinutes":{"type":"number"},"startTime":{"type":"string"},"endTime":{"type":"string"},"search":{"type":"string"},"level":{"type":"string"},"maxRows":{"type":"number"}},"required":["logName","sinceMinutes","startTime","endTime","search","level","maxRows"]}]]></json>
+                            </inputSchema>
+                            <outputSchema>
+                                <json><![CDATA[{"type":"object"}]]></json>
+                            </outputSchema>
+                        </Row>
                     </Rows>
                 </ConfigurationTable>
             </ConfigurationTables>

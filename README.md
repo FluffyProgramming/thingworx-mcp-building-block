@@ -80,6 +80,33 @@ ThingWorx's base64-to-BLOB auto-conversion applies to the platform's own
 request-binding path, not to nested script-to-script calls. Ordinary
 scalar/JSON params are unaffected.
 
+### `GetLogEntries`
+
+Returns application/script log entries from the live server, optionally
+filtered by time window, level, and search text. Read-only; throws on
+failure (e.g. an invalid `logName`).
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `logName` | string | no | One of `ApplicationLog`, `CommunicationLog`, `ConfigurationLog`, `ScriptLog`, `SecurityLog`. Defaults to `ApplicationLog`. |
+| `sinceMinutes` | number | no | Return entries from this many minutes ago through now. Ignored if `startTime`/`endTime` are given. |
+| `startTime` | string | no | Explicit ISO 8601 start of the time window. Takes precedence over `sinceMinutes`. |
+| `endTime` | string | no | Explicit ISO 8601 end of the time window. Takes precedence over `sinceMinutes`. |
+| `search` | string | no | Plain substring to search for in log message content. |
+| `level` | string | no | Filter to exactly this level: `ERROR`, `WARN`, `INFO`, or `DEBUG` (case-insensitive). |
+| `maxRows` | number | no | Maximum rows to return. Defaults to 50, clamped to a maximum of 200. |
+
+| Output | Type | Description |
+|---|---|---|
+| `result` | array | Array of `{ timestamp, level, source, message }`. Empty array if nothing matched — not an error. Throws on genuine failure (e.g. an invalid `logName`). |
+
+Implemented on `Management_TS`. Note: all inputs above are functionally
+optional, but the generated MCP tool schema currently marks every
+parameter as required (a pre-existing limitation of this repo's
+`ToolsConfigGenerator.psm1`, already true for `ExecuteService`'s `params`)
+— pass an empty string/omit-equivalent value if your MCP client requires
+sending every listed field.
+
 ## Repository layout
 
 ```
