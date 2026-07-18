@@ -94,7 +94,7 @@ failure (e.g. an invalid `logName`).
 | `endTime` | string | no | Explicit ISO 8601 end of the time window. Takes precedence over `sinceMinutes`. |
 | `search` | string | no | Plain substring to search for in log message content. |
 | `level` | string | no | Filter to exactly this level: `ERROR`, `WARN`, `INFO`, or `DEBUG` (case-insensitive). |
-| `maxRows` | number | no | Maximum rows to return. Defaults to 50, clamped to a maximum of 200. |
+| `maxRows` | number | no | Maximum rows to return. Defaults to 50 if omitted, clamped to a minimum of 1 and a maximum of 200. |
 
 | Output | Type | Description |
 |---|---|---|
