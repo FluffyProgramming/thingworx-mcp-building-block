@@ -168,22 +168,6 @@
                          ordinal="4"></FieldDefinition>
                     </ParameterDefinitions>
                 </ServiceDefinition>
-                <ServiceDefinition
-                 aspect.isAsync="false"
-                 category=""
-                 description="TEMP PROBE - delete before finishing this task"
-                 isAllowOverride="false"
-                 isLocalOnly="false"
-                 isOpen="false"
-                 isPrivate="false"
-                 name="ProbeListFiles">
-                    <ResultType
-                     baseType="JSON"
-                     description=""
-                     name="result"
-                     ordinal="0"></ResultType>
-                    <ParameterDefinitions></ParameterDefinitions>
-                </ServiceDefinition>
             </ServiceDefinitions>
             <EventDefinitions></EventDefinitions>
             <ServiceMappings></ServiceMappings>
@@ -530,58 +514,6 @@ try {
 } catch (err) {
     logger.error("VPS.Development.MCP.Management_TS.ExportEntities failed: " + err.message);
     throw err;
-}]]></code>
-                                </Row>
-                            </Rows>
-                        </ConfigurationTable>
-                    </ConfigurationTables>
-                </ServiceImplementation>
-                <ServiceImplementation
-                 description=""
-                 handlerName="Script"
-                 name="ProbeListFiles">
-                    <ConfigurationTables>
-                        <ConfigurationTable
-                         dataShapeName=""
-                         description=""
-                         isMultiRow="false"
-                         name="Script"
-                         ordinal="0">
-                            <DataShape>
-                                <FieldDefinitions>
-                                    <FieldDefinition
-                                     baseType="STRING"
-                                     description="code"
-                                     name="code"
-                                     ordinal="0"></FieldDefinition>
-                                </FieldDefinitions>
-                            </DataShape>
-                            <Rows>
-                                <Row>
-                                    <code><![CDATA[try {
-    var exportPath = Resources["SourceControlFunctions"].ExportSourceControlledEntitiesToZipFile({
-        repositoryName: "SystemRepository",
-        path: "probe-list-scratch",
-        projectName: "VPS.Development.MCP",
-        includeDependents: true
-    });
-    var repoRelativePath = String(exportPath).replace("/FileRepositories/SystemRepository/", "");
-    Things["SystemRepository"].ExtractZipArchive({
-        zipFileName: repoRelativePath,
-        path: "probe-list-scratch-extracted"
-    });
-
-    var rootFiles = Things["SystemRepository"].ListFiles({ path: "probe-list-scratch-extracted" });
-    var rootDirs = Things["SystemRepository"].ListDirectories({ path: "probe-list-scratch-extracted" });
-
-    result = {
-        rootFilesType: typeof rootFiles,
-        rootFilesJson: rootFiles && typeof rootFiles.ToJSON === "function" ? rootFiles.ToJSON() : String(rootFiles),
-        rootDirsType: typeof rootDirs,
-        rootDirsJson: rootDirs && typeof rootDirs.ToJSON === "function" ? rootDirs.ToJSON() : String(rootDirs)
-    };
-} catch (err) {
-    result = { success: false, error: err.message };
 }]]></code>
                                 </Row>
                             </Rows>
