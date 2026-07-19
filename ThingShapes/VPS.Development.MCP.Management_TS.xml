@@ -131,6 +131,59 @@
                          ordinal="7"></FieldDefinition>
                     </ParameterDefinitions>
                 </ServiceDefinition>
+                <ServiceDefinition
+                 aspect.isAsync="false"
+                 category=""
+                 description="Exports a project's entities from the live server as a base64-encoded zip (the reverse of ImportEntityZip), with a manifest of what was included. Read-only aside from scratch-file cleanup in SystemRepository; throws on failure."
+                 isAllowOverride="false"
+                 isLocalOnly="false"
+                 isOpen="false"
+                 isPrivate="false"
+                 name="ExportEntities">
+                    <ResultType
+                     baseType="JSON"
+                     description=""
+                     name="result"
+                     ordinal="0"></ResultType>
+                    <ParameterDefinitions>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Name of the ThingWorx project to export. Required, no default."
+                         name="projectName"
+                         ordinal="1"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="BOOLEAN"
+                         description="Whether to include entities the project depends on but doesn't directly contain. Defaults to true if omitted."
+                         name="includeDependents"
+                         ordinal="2"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Optional ISO 8601 start bound, for incremental exports."
+                         name="startDate"
+                         ordinal="3"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Optional ISO 8601 end bound, for incremental exports."
+                         name="endDate"
+                         ordinal="4"></FieldDefinition>
+                    </ParameterDefinitions>
+                </ServiceDefinition>
+                <ServiceDefinition
+                 aspect.isAsync="false"
+                 category=""
+                 description="TEMP PROBE - delete before finishing this task"
+                 isAllowOverride="false"
+                 isLocalOnly="false"
+                 isOpen="false"
+                 isPrivate="false"
+                 name="ProbeListFiles">
+                    <ResultType
+                     baseType="JSON"
+                     description=""
+                     name="result"
+                     ordinal="0"></ResultType>
+                    <ParameterDefinitions></ParameterDefinitions>
+                </ServiceDefinition>
             </ServiceDefinitions>
             <EventDefinitions></EventDefinitions>
             <ServiceMappings></ServiceMappings>
@@ -367,6 +420,171 @@ try {
 } catch (err) {
     logger.error("VPS.Development.MCP.Management_TS.GetLogEntries failed: " + err.message);
     throw err;
+}]]></code>
+                                </Row>
+                            </Rows>
+                        </ConfigurationTable>
+                    </ConfigurationTables>
+                </ServiceImplementation>
+                <ServiceImplementation
+                 description=""
+                 handlerName="Script"
+                 name="ExportEntities">
+                    <ConfigurationTables>
+                        <ConfigurationTable
+                         dataShapeName=""
+                         description=""
+                         isMultiRow="false"
+                         name="Script"
+                         ordinal="0">
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     baseType="STRING"
+                                     description="code"
+                                     name="code"
+                                     ordinal="0"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows>
+                                <Row>
+                                    <code><![CDATA[try {
+    if (!projectName) {
+        throw new Error("projectName must not be empty");
+    }
+
+    var effectiveIncludeDependents = (includeDependents !== undefined && includeDependents !== null) ? includeDependents : true;
+
+    var scratchZipPath = "export-entities-scratch";
+    var scratchExtractPath = "export-entities-scratch-extracted";
+
+    var exportParams = {
+        repositoryName: "SystemRepository",
+        path: scratchZipPath,
+        projectName: projectName,
+        includeDependents: effectiveIncludeDependents
+    };
+    if (startDate) {
+        exportParams.startDate = startDate;
+    }
+    if (endDate) {
+        exportParams.endDate = endDate;
+    }
+
+    var exportPath = Resources["SourceControlFunctions"].ExportSourceControlledEntitiesToZipFile(exportParams);
+    var repoRelativePath = String(exportPath).replace("/FileRepositories/SystemRepository/", "");
+
+    var zipBlob = Things["SystemRepository"].LoadBinary({ path: repoRelativePath });
+    var base64Content = String(zipBlob);
+
+    Things["SystemRepository"].ExtractZipArchive({
+        zipFileName: repoRelativePath,
+        path: scratchExtractPath
+    });
+
+    var manifest = [];
+    var extractedFilePaths = [];
+
+    // NOTE: this walk function's row-field assumptions (row.name for both
+    // ListFiles and ListDirectories rows) are a starting hypothesis based
+    // on common ThingWorx FileRepository conventions. Step 4 above's live
+    // probe MUST confirm or correct these field names before this code is
+    // considered final — adjust every `row.name` reference below (and the
+    // path-joining logic) to match whatever Step 4 actually revealed.
+    function walk(relativePath) {
+        var files = Things["SystemRepository"].ListFiles({ path: scratchExtractPath + (relativePath ? "/" + relativePath : "") });
+        var fileRows = (files && files.rows) ? files.rows : [];
+        for (var i = 0; i < fileRows.length; i++) {
+            var fileName = fileRows[i].name;
+            var entryRelativePath = relativePath ? relativePath + "/" + fileName : fileName;
+            manifest.push(entryRelativePath);
+            extractedFilePaths.push(scratchExtractPath + "/" + entryRelativePath);
+        }
+
+        var dirs = Things["SystemRepository"].ListDirectories({ path: scratchExtractPath + (relativePath ? "/" + relativePath : "") });
+        var dirRows = (dirs && dirs.rows) ? dirs.rows : [];
+        for (var j = 0; j < dirRows.length; j++) {
+            var dirName = dirRows[j].name;
+            var subPath = relativePath ? relativePath + "/" + dirName : dirName;
+            walk(subPath);
+        }
+    }
+
+    walk("");
+
+    try {
+        Things["SystemRepository"].DeleteFile({ path: repoRelativePath });
+    } catch (cleanupErr) {
+        logger.error("VPS.Development.MCP.Management_TS.ExportEntities cleanup failed for " + repoRelativePath + ": " + cleanupErr.message);
+    }
+    for (var k = 0; k < extractedFilePaths.length; k++) {
+        try {
+            Things["SystemRepository"].DeleteFile({ path: extractedFilePaths[k] });
+        } catch (cleanupErr2) {
+            logger.error("VPS.Development.MCP.Management_TS.ExportEntities cleanup failed for " + extractedFilePaths[k] + ": " + cleanupErr2.message);
+        }
+    }
+
+    result = {
+        zipContent: base64Content,
+        manifest: manifest,
+        entityCount: manifest.length
+    };
+} catch (err) {
+    logger.error("VPS.Development.MCP.Management_TS.ExportEntities failed: " + err.message);
+    throw err;
+}]]></code>
+                                </Row>
+                            </Rows>
+                        </ConfigurationTable>
+                    </ConfigurationTables>
+                </ServiceImplementation>
+                <ServiceImplementation
+                 description=""
+                 handlerName="Script"
+                 name="ProbeListFiles">
+                    <ConfigurationTables>
+                        <ConfigurationTable
+                         dataShapeName=""
+                         description=""
+                         isMultiRow="false"
+                         name="Script"
+                         ordinal="0">
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     baseType="STRING"
+                                     description="code"
+                                     name="code"
+                                     ordinal="0"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows>
+                                <Row>
+                                    <code><![CDATA[try {
+    var exportPath = Resources["SourceControlFunctions"].ExportSourceControlledEntitiesToZipFile({
+        repositoryName: "SystemRepository",
+        path: "probe-list-scratch",
+        projectName: "VPS.Development.MCP",
+        includeDependents: true
+    });
+    var repoRelativePath = String(exportPath).replace("/FileRepositories/SystemRepository/", "");
+    Things["SystemRepository"].ExtractZipArchive({
+        zipFileName: repoRelativePath,
+        path: "probe-list-scratch-extracted"
+    });
+
+    var rootFiles = Things["SystemRepository"].ListFiles({ path: "probe-list-scratch-extracted" });
+    var rootDirs = Things["SystemRepository"].ListDirectories({ path: "probe-list-scratch-extracted" });
+
+    result = {
+        rootFilesType: typeof rootFiles,
+        rootFilesJson: rootFiles && typeof rootFiles.ToJSON === "function" ? rootFiles.ToJSON() : String(rootFiles),
+        rootDirsType: typeof rootDirs,
+        rootDirsJson: rootDirs && typeof rootDirs.ToJSON === "function" ? rootDirs.ToJSON() : String(rootDirs)
+    };
+} catch (err) {
+    result = { success: false, error: err.message };
 }]]></code>
                                 </Row>
                             </Rows>
