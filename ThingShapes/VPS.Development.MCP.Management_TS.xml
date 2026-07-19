@@ -475,7 +475,7 @@ try {
     var repoRelativePath = String(exportPath).replace("/FileRepositories/SystemRepository/", "");
 
     var zipBlob = Things["SystemRepository"].LoadBinary({ path: repoRelativePath });
-    var base64Content = String(zipBlob);
+    var base64Content = zipBlob;
 
     Things["SystemRepository"].ExtractZipArchive({
         zipFileName: repoRelativePath,
@@ -485,12 +485,9 @@ try {
     var manifest = [];
     var extractedFilePaths = [];
 
-    // NOTE: this walk function's row-field assumptions (row.name for both
-    // ListFiles and ListDirectories rows) are a starting hypothesis based
-    // on common ThingWorx FileRepository conventions. Step 4 above's live
-    // probe MUST confirm or correct these field names before this code is
-    // considered final — adjust every `row.name` reference below (and the
-    // path-joining logic) to match whatever Step 4 actually revealed.
+    // ListFiles/ListDirectories row shape confirmed live via a temporary
+    // probe (since removed): both return rows with a bare `.name` field
+    // (accessed via `.rows`), so recursive path-joining below is safe.
     function walk(relativePath) {
         var files = Things["SystemRepository"].ListFiles({ path: scratchExtractPath + (relativePath ? "/" + relativePath : "") });
         var fileRows = (files && files.rows) ? files.rows : [];
