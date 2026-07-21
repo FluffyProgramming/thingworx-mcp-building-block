@@ -21,6 +21,7 @@ This MCP building block closes that loop. Each tool below maps to one step of th
 - **Local build/package tooling** (built): `scripts/PackageSourceControlZip.ps1` + `scripts/lib/SourceControlPackager.psm1` regenerate `ToolsConfiguration` and package this repo's entity folders into an `ImportEntityZip`-ready zip, base64-encoded, written to `dist/`, including a `-ChangedOnly` mode that packages just uncommitted working-tree changes to keep the base64 payload small. See design docs: `docs/superpowers/specs/2026-07-16-source-control-packaging-design.md` and `docs/superpowers/specs/2026-07-17-changed-files-packaging-design.md`. The Claude Code skill that chains this to an `ImportEntityZip` call (with a confirmation prompt first) is also built — see `.claude/skills/import-entity-changes/SKILL.md` and Section 7.
 - **`ExecuteService`** (built): calls a service on any Thing with given `params` and returns a structured `{success, result, executionTimeMs, error}` JSON result, never throwing. Live-verified against a real ThingWorx server, including a real params-binding bug found and fixed in the process. See design doc: `docs/superpowers/specs/2026-07-16-execute-service-design.md`. Known limitation: chaining into a service that itself does BLOB/binary parameter handling (e.g. `ImportEntityZip`'s own `SaveBinary` call) doesn't work yet — see the design doc's "Known limitations."
 - **`GetLogEntries`** (built): queries ThingWorx's built-in `DefaultLogRetrievalStrategyThing.RetrieveLogs` and returns a simplified `[{ timestamp, level, source, message }]` array, with time-window, level, and search filtering. Read-only, throws on failure. See design doc: `docs/superpowers/specs/2026-07-17-get-log-entries-design.md`.
+- **`ExportEntities`** (built): exports a project's entities as a base64-encoded zip (the reverse of `ImportEntityZip`), with a manifest of what was included. Wraps `Resources["SourceControlFunctions"].ExportSourceControlledEntitiesToZipFile`. See design doc: `docs/superpowers/specs/2026-07-18-export-entities-design.md`.
 
 ---
 
@@ -30,7 +31,7 @@ Ranked by how much each would have changed the investigation. Build the core loo
 
 1. `ExecuteService` (built) — makes the TEST_ pattern autonomous. Highest value.
 2. `GetLogEntries` (built) — removes the paste-the-error friction.
-3. `ExportEntities` — kills stale state, enforces export discipline, completes the round trip.
+3. `ExportEntities` (built) — kills stale state, enforces export discipline, completes the round trip.
 4. `GetEntityDefinition` — read live entity structure instead of guessing.
 5. `ListEntities` — discover what exists before referencing it.
 6. `ValidateImport` (dry run) — catch failures before committing.

@@ -133,6 +133,32 @@
                                 <json><![CDATA[{"type":"object"}]]></json>
                             </outputSchema>
                         </Row>
+                        <Row>
+                            <toolName><![CDATA[ExportEntities]]></toolName>
+                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
+                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
+                            <serviceName><![CDATA[ExportEntities]]></serviceName>
+                            <description><![CDATA[Exports a project's entities from the live server as a base64-encoded zip (the reverse of ImportEntityZip), with a manifest of what was included. Read-only aside from scratch-file cleanup in SystemRepository; throws on failure.]]></description>
+                            <title><![CDATA[ExportEntities]]></title>
+                            <applicationName><![CDATA[ThingWorx]]></applicationName>
+                            <meta>
+                                <json><![CDATA[{}]]></json>
+                            </meta>
+                            <toolAnnotations>
+                                <infoTable>
+                                    <DataShape>
+                                        <FieldDefinitions />
+                                    </DataShape>
+                                    <Rows />
+                                </infoTable>
+                            </toolAnnotations>
+                            <inputSchema>
+                                <json><![CDATA[{"type":"object","properties":{"projectName":{"type":"string"},"includeDependents":{"type":"boolean"},"startDate":{"type":"string"},"endDate":{"type":"string"}},"required":["projectName","includeDependents","startDate","endDate"]}]]></json>
+                            </inputSchema>
+                            <outputSchema>
+                                <json><![CDATA[{"type":"object"}]]></json>
+                            </outputSchema>
+                        </Row>
                     </Rows>
                 </ConfigurationTable>
             </ConfigurationTables>

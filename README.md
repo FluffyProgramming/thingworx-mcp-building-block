@@ -107,6 +107,31 @@ parameter as required (a pre-existing limitation of this repo's
 — pass an empty string/omit-equivalent value if your MCP client requires
 sending every listed field.
 
+### `ExportEntities`
+
+Exports a project's entities from the live server as a base64-encoded zip
+(the reverse of `ImportEntityZip`), with a manifest of what was included.
+Read-only aside from scratch-file cleanup in `SystemRepository`; throws on
+failure.
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `projectName` | string | yes | Name of the ThingWorx project to export. No default. |
+| `includeDependents` | boolean | no | Whether to include entities the project depends on but doesn't directly contain. Defaults to `true`. |
+| `startDate` | string | no | Optional ISO 8601 start bound, for incremental exports. |
+| `endDate` | string | no | Optional ISO 8601 end bound, for incremental exports. |
+
+| Output | Type | Description |
+|---|---|---|
+| `result` | object | `{ zipContent, manifest, entityCount }`. `zipContent` is a base64-encoded zip in the same format `ImportEntityZip` accepts, so the two tools compose. `manifest` is an array of the entity file paths included. `entityCount` is `manifest.length`. Throws on failure (e.g. an invalid `projectName`). |
+
+Implemented on `Management_TS`. Note: `includeDependents`/`startDate`/
+`endDate` are functionally optional, but the generated MCP tool schema
+currently marks every parameter as required (a pre-existing limitation of
+this repo's `ToolsConfigGenerator.psm1`, already true for `ExecuteService`'s
+`params` and `GetLogEntries`'s optional inputs) — pass an empty/omit-
+equivalent value if your MCP client requires sending every listed field.
+
 ## Repository layout
 
 ```
