@@ -21,6 +21,7 @@ This MCP building block closes that loop. Each tool below maps to one step of th
 - **Local build/package tooling** (built): `scripts/PackageSourceControlZip.ps1` + `scripts/lib/SourceControlPackager.psm1` regenerate `ToolsConfiguration` and package this repo's entity folders into an `ImportEntityZip`-ready zip, base64-encoded, written to `dist/`, including a `-ChangedOnly` mode that packages just uncommitted working-tree changes to keep the base64 payload small. See design docs: `docs/superpowers/specs/2026-07-16-source-control-packaging-design.md` and `docs/superpowers/specs/2026-07-17-changed-files-packaging-design.md`. The Claude Code skill that chains this to an `ImportEntityZip` call (with a confirmation prompt first) is also built — see `.claude/skills/import-entity-changes/SKILL.md` and Section 7.
 - **`ExecuteService`** (built): calls a service on any Thing with given `params` and returns a structured `{success, result, executionTimeMs, error}` JSON result, never throwing. Live-verified against a real ThingWorx server, including a real params-binding bug found and fixed in the process. See design doc: `docs/superpowers/specs/2026-07-16-execute-service-design.md`. Known limitation: chaining into a service that itself does BLOB/binary parameter handling (e.g. `ImportEntityZip`'s own `SaveBinary` call) doesn't work yet — see the design doc's "Known limitations."
 - **`GetLogEntries`** (built): queries ThingWorx's built-in `DefaultLogRetrievalStrategyThing.RetrieveLogs` and returns a simplified `[{ timestamp, level, source, message }]` array, with time-window, level, and search filtering. Read-only, throws on failure. See design doc: `docs/superpowers/specs/2026-07-17-get-log-entries-design.md`.
+- **`ExportEntities`** (built): exports a project's entities as a base64-encoded zip (the reverse of `ImportEntityZip`), with a manifest of what was included. Wraps `Resources["SourceControlFunctions"].ExportSourceControlledEntitiesToZipFile`. See design doc: `docs/superpowers/specs/2026-07-18-export-entities-design.md`.
 
 ---
 
@@ -30,7 +31,7 @@ Ranked by how much each would have changed the investigation. Build the core loo
 
 1. `ExecuteService` (built) — makes the TEST_ pattern autonomous. Highest value.
 2. `GetLogEntries` (built) — removes the paste-the-error friction.
-3. `ExportEntities` — kills stale state, enforces export discipline, completes the round trip.
+3. `ExportEntities` (built) — kills stale state, enforces export discipline, completes the round trip.
 4. `GetEntityDefinition` — read live entity structure instead of guessing.
 5. `ListEntities` — discover what exists before referencing it.
 6. `ValidateImport` (dry run) — catch failures before committing.
@@ -64,13 +65,13 @@ Each tool notes its purpose, inputs, output shape, whether it mutates server sta
 - **Removes:** the opaque-debugging problem. In the retrospectives, diagnosing a bad TEST_ result meant a human copying log output into the chat. This removes that entirely.
 - **Notes:** if feasible, support correlating logs to a specific service run (e.g., a request id) so Claude sees only the relevant lines.
 
-### 4.3 `ExportEntities`
+### 4.3 `ExportEntities`  (built)
 
-**Purpose:** Pull a zip (or single entity XML) of named entities, a project, or everything, back out of the server. The reverse of `ImportEntityZip`.
+**Purpose:** Pull a zip of a project's entities back out of the server. The reverse of `ImportEntityZip`.
 
-- **Mutates state:** No (read-only).
-- **Inputs:** one of `entityNames` (array), `projectName`, or `all`; optional `format` (zip base64 or raw XML).
-- **Output:** base64 zip or XML string, plus a manifest of what was exported.
+- **Mutates state:** No (read-only, aside from scratch-file writes/cleanup in `SystemRepository` during the call).
+- **Inputs:** `projectName` (required, no default), optional `includeDependents` (BOOLEAN, defaults to `true`), optional `startDate`/`endDate` (ISO 8601, for incremental exports). `entityNames`-array and `all` scoping modes, plus a raw-XML output option, were considered during design but deferred as unneeded for this repo's single-project reality — see the design doc's "Out of scope" section: `docs/superpowers/specs/2026-07-18-export-entities-design.md`.
+- **Output:** `{ zipContent, manifest, entityCount }` — `zipContent` is a base64 zip in the same format `ImportEntityZip` accepts, `manifest` is an array of the entity file paths included, `entityCount` is `manifest.length`.
 - **Removes:** stale-state bugs. The retrospectives flagged "export before every session" as essential because entities edited in Composer make Claude's view stale. This automates that discipline: Claude exports current state before starting.
 
 ### 4.4 `GetEntityDefinition`
