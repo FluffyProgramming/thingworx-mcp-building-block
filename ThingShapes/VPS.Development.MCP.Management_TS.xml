@@ -439,8 +439,9 @@ try {
 
     var effectiveIncludeDependents = (includeDependents !== undefined && includeDependents !== null) ? includeDependents : true;
 
-    var scratchZipPath = "export-entities-scratch";
-    var scratchExtractPath = "export-entities-scratch-extracted";
+    var scratchSuffix = String(Date.now());
+    var scratchZipPath = "export-entities-scratch-" + scratchSuffix;
+    var scratchExtractPath = "export-entities-scratch-extracted-" + scratchSuffix;
 
     var exportParams = {
         repositoryName: "SystemRepository",
@@ -459,6 +460,9 @@ try {
     var repoRelativePath = String(exportPath).replace("/FileRepositories/SystemRepository/", "");
 
     var zipBlob = Things["SystemRepository"].LoadBinary({ path: repoRelativePath });
+    if (!zipBlob) {
+        throw new Error("LoadBinary returned no content for " + repoRelativePath);
+    }
     var base64Content = zipBlob;
 
     Things["SystemRepository"].ExtractZipArchive({
@@ -472,7 +476,7 @@ try {
     // ListFiles/ListDirectories row shape confirmed live via a temporary
     // probe (since removed): both return rows with a bare `.name` field
     // (accessed via `.rows`), so recursive path-joining below is safe.
-    function walk(relativePath) {
+    var walk = function (relativePath) {
         var files = Things["SystemRepository"].ListFiles({ path: scratchExtractPath + (relativePath ? "/" + relativePath : "") });
         var fileRows = (files && files.rows) ? files.rows : [];
         for (var i = 0; i < fileRows.length; i++) {
@@ -489,7 +493,7 @@ try {
             var subPath = relativePath ? relativePath + "/" + dirName : dirName;
             walk(subPath);
         }
-    }
+    };
 
     walk("");
 
