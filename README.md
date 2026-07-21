@@ -131,6 +131,13 @@ currently marks every parameter as required (a pre-existing limitation of
 this repo's `ToolsConfigGenerator.psm1`, already true for `ExecuteService`'s
 `params` and `GetLogEntries`'s optional inputs) — pass an empty/omit-
 equivalent value if your MCP client requires sending every listed field.
+Known limitation: composing this tool's `zipContent` output directly into
+an `ImportEntityZip` call through an MCP client (rather than persisting it
+to a file first) requires the client to reproduce the full base64 string as
+a fresh tool-call argument, which carries the same payload-size/corruption
+risk already tracked in `docs/ThingworxMCPToolRoadmap.md` Section 8 — for
+large exports, prefer writing `zipContent` to a local file before re-using
+it, rather than passing it straight through as generated output.
 
 ## Repository layout
 
