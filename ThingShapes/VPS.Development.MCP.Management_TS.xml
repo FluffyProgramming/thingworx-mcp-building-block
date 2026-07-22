@@ -606,6 +606,17 @@ try {
         return out;
     };
 
+    var filterLocal = function (infoTable, ownerName) {
+        var arr = flattenInfoTable(infoTable);
+        var out = [];
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i].sourceName === ownerName) {
+                out.push(arr[i]);
+            }
+        }
+        return out;
+    };
+
     if (entityType === "DataShape") {
         if (!DataShapes[entityName]) {
             throw new Error("DataShape '" + entityName + "' does not exist");
@@ -616,7 +627,31 @@ try {
             fields: flattenInfoTable(DataShapes[entityName].GetFieldDefinitions())
         };
     } else {
-        throw new Error("entityType '" + entityType + "' not yet implemented");
+        var collection;
+        if (entityType === "Thing") {
+            collection = Things;
+        } else if (entityType === "ThingTemplate") {
+            collection = ThingTemplates;
+        } else {
+            collection = ThingShapes;
+        }
+
+        var entity = collection[entityName];
+        if (!entity) {
+            throw new Error(entityType + " '" + entityName + "' does not exist");
+        }
+
+        var services = filterLocal(entity.GetServiceDefinitions(), entityName);
+        var properties = filterLocal(entity.GetPropertyDefinitions(), entityName);
+        var events = filterLocal(entity.GetEventDefinitions(), entityName);
+
+        result = {
+            entityName: entityName,
+            entityType: entityType,
+            services: services,
+            properties: properties,
+            events: events
+        };
     }
 } catch (err) {
     logger.error("VPS.Development.MCP.Management_TS.GetEntityDefinition failed: " + err.message);
