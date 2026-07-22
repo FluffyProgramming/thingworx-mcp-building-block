@@ -660,6 +660,18 @@ try {
             events: events,
             configurationTables: configurationTables
         };
+
+        if (entityType === "Thing") {
+            var shapeRows = flattenInfoTable(entity.GetImplementedShapes());
+            var shapeNames = [];
+            for (var s = 0; s < shapeRows.length; s++) {
+                shapeNames.push(shapeRows[s].name);
+            }
+            result.inheritance = {
+                thingTemplate: String(entity.thingTemplate),
+                implementedShapes: shapeNames
+            };
+        }
     }
 } catch (err) {
     logger.error("VPS.Development.MCP.Management_TS.GetEntityDefinition failed: " + err.message);
