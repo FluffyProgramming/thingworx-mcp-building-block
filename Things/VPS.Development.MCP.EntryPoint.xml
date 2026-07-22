@@ -159,6 +159,32 @@
                                 <json><![CDATA[{"type":"object"}]]></json>
                             </outputSchema>
                         </Row>
+                        <Row>
+                            <toolName><![CDATA[GetEntityDefinition]]></toolName>
+                            <serviceProviderName><![CDATA[VPS.Development.MCP.Manager]]></serviceProviderName>
+                            <serviceProviderType><![CDATA[Thing]]></serviceProviderType>
+                            <serviceName><![CDATA[GetEntityDefinition]]></serviceName>
+                            <description><![CDATA[Returns the live structural definition of a Thing, ThingTemplate, ThingShape, or DataShape: locally-defined services, properties, events, configuration table schemas, and inheritance chain. Throws on failure.]]></description>
+                            <title><![CDATA[GetEntityDefinition]]></title>
+                            <applicationName><![CDATA[ThingWorx]]></applicationName>
+                            <meta>
+                                <json><![CDATA[{}]]></json>
+                            </meta>
+                            <toolAnnotations>
+                                <infoTable>
+                                    <DataShape>
+                                        <FieldDefinitions />
+                                    </DataShape>
+                                    <Rows />
+                                </infoTable>
+                            </toolAnnotations>
+                            <inputSchema>
+                                <json><![CDATA[{"type":"object","properties":{"entityName":{"type":"string"},"entityType":{"type":"string"}},"required":["entityName","entityType"]}]]></json>
+                            </inputSchema>
+                            <outputSchema>
+                                <json><![CDATA[{"type":"object"}]]></json>
+                            </outputSchema>
+                        </Row>
                     </Rows>
                 </ConfigurationTable>
             </ConfigurationTables>

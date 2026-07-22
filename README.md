@@ -139,6 +139,23 @@ risk already tracked in `docs/ThingworxMCPToolRoadmap.md` Section 8 — for
 large exports, prefer writing `zipContent` to a local file before re-using
 it, rather than passing it straight through as generated output.
 
+### `GetEntityDefinition`
+
+Returns the live structural definition of a `Thing`, `ThingTemplate`,
+`ThingShape`, or `DataShape` — locally-defined services, properties, events,
+configuration table schemas, and inheritance chain. Throws on failure.
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `entityName` | string | yes | Name of the entity to inspect, e.g. `"VPS.Development.MCP.Manager"`. |
+| `entityType` | string | yes | One of `Thing`, `ThingTemplate`, `ThingShape`, `DataShape`. |
+
+| Output | Type | Description |
+|---|---|---|
+| `result` | object | Shape varies by `entityType`. For `DataShape`: `{ entityName, entityType, fields }`, where `fields` is the DataShape's field definitions. For `Thing`/`ThingTemplate`/`ThingShape`: `{ entityName, entityType, services, properties, events, configurationTables, inheritance? }` — `services`/`properties`/`events` are locally-defined only (not inherited), `configurationTables` is schema only (no row data). `inheritance` (`{ thingTemplate, implementedShapes }`) is present only for `Thing`; `ThingTemplate` and `ThingShape` never include it — no live-queryable mechanism for a `ThingTemplate`'s own base template was found on this ThingWorx 10.1 server, and `ThingShape` has no inheritance concept. Throws on failure (invalid `entityType`, empty `entityName`, or entity not found). |
+
+Implemented on `Management_TS`.
+
 ## Repository layout
 
 ```

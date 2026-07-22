@@ -168,6 +168,33 @@
                          ordinal="4"></FieldDefinition>
                     </ParameterDefinitions>
                 </ServiceDefinition>
+                <ServiceDefinition
+                 aspect.isAsync="false"
+                 category=""
+                 description="Returns the live structural definition of a Thing, ThingTemplate, ThingShape, or DataShape: locally-defined services, properties, events, configuration table schemas, and inheritance chain. Throws on failure."
+                 isAllowOverride="false"
+                 isLocalOnly="false"
+                 isOpen="false"
+                 isPrivate="false"
+                 name="GetEntityDefinition">
+                    <ResultType
+                     baseType="JSON"
+                     description=""
+                     name="result"
+                     ordinal="0"></ResultType>
+                    <ParameterDefinitions>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="Name of the entity to inspect, e.g. VPS.Development.MCP.Manager."
+                         name="entityName"
+                         ordinal="1"></FieldDefinition>
+                        <FieldDefinition
+                         baseType="STRING"
+                         description="One of: Thing, ThingTemplate, ThingShape, DataShape."
+                         name="entityType"
+                         ordinal="2"></FieldDefinition>
+                    </ParameterDefinitions>
+                </ServiceDefinition>
             </ServiceDefinitions>
             <EventDefinitions></EventDefinitions>
             <ServiceMappings></ServiceMappings>
@@ -517,6 +544,137 @@ try {
     };
 } catch (err) {
     logger.error("VPS.Development.MCP.Management_TS.ExportEntities failed: " + err.message);
+    throw err;
+}]]></code>
+                                </Row>
+                            </Rows>
+                        </ConfigurationTable>
+                    </ConfigurationTables>
+                </ServiceImplementation>
+                <ServiceImplementation
+                 description=""
+                 handlerName="Script"
+                 name="GetEntityDefinition">
+                    <ConfigurationTables>
+                        <ConfigurationTable
+                         dataShapeName=""
+                         description=""
+                         isMultiRow="false"
+                         name="Script"
+                         ordinal="0">
+                            <DataShape>
+                                <FieldDefinitions>
+                                    <FieldDefinition
+                                     baseType="STRING"
+                                     description="code"
+                                     name="code"
+                                     ordinal="0"></FieldDefinition>
+                                </FieldDefinitions>
+                            </DataShape>
+                            <Rows>
+                                <Row>
+                                    <code><![CDATA[try {
+    var validTypes = ["Thing", "ThingTemplate", "ThingShape", "DataShape"];
+    if (validTypes.indexOf(entityType) === -1) {
+        throw new Error("entityType must be one of Thing, ThingTemplate, ThingShape, DataShape, got: " + entityType);
+    }
+    if (!entityName) {
+        throw new Error("entityName must not be empty");
+    }
+
+    var flattenRow = function (row) {
+        var flat = {};
+        for (var key in row) {
+            var value = row[key];
+            if (value && typeof value === "object" && typeof value.rows !== "undefined") {
+                flat[key] = flattenInfoTable(value);
+            } else {
+                flat[key] = value;
+            }
+        }
+        return flat;
+    };
+
+    var flattenInfoTable = function (infoTable) {
+        if (!infoTable || !infoTable.rows) {
+            return [];
+        }
+        var out = [];
+        for (var i = 0; i < infoTable.rows.length; i++) {
+            out.push(flattenRow(infoTable.rows[i]));
+        }
+        return out;
+    };
+
+    var filterLocal = function (infoTable, ownerName) {
+        var arr = flattenInfoTable(infoTable);
+        var out = [];
+        for (var i = 0; i < arr.length; i++) {
+            if (arr[i].sourceName === ownerName) {
+                out.push(arr[i]);
+            }
+        }
+        return out;
+    };
+
+    if (entityType === "DataShape") {
+        if (!DataShapes[entityName]) {
+            throw new Error("DataShape '" + entityName + "' does not exist");
+        }
+        result = {
+            entityName: entityName,
+            entityType: entityType,
+            fields: flattenInfoTable(DataShapes[entityName].GetFieldDefinitions())
+        };
+    } else {
+        var collection;
+        if (entityType === "Thing") {
+            collection = Things;
+        } else if (entityType === "ThingTemplate") {
+            collection = ThingTemplates;
+        } else {
+            collection = ThingShapes;
+        }
+
+        var entity = collection[entityName];
+        if (!entity) {
+            throw new Error(entityType + " '" + entityName + "' does not exist");
+        }
+
+        var services = filterLocal(entity.GetServiceDefinitions(), entityName);
+        var properties = filterLocal(entity.GetPropertyDefinitions(), entityName);
+        var events = filterLocal(entity.GetEventDefinitions(), entityName);
+
+        var tableNames = flattenInfoTable(entity.GetConfigurationTables());
+        var configurationTables = [];
+        for (var t = 0; t < tableNames.length; t++) {
+            var tableDef = flattenInfoTable(entity.GetConfigurationTableDefinition({ tableName: tableNames[t].name }));
+            configurationTables.push(tableDef[0]);
+        }
+
+        result = {
+            entityName: entityName,
+            entityType: entityType,
+            services: services,
+            properties: properties,
+            events: events,
+            configurationTables: configurationTables
+        };
+
+        if (entityType === "Thing") {
+            var shapeRows = flattenInfoTable(entity.GetImplementedShapes());
+            var shapeNames = [];
+            for (var s = 0; s < shapeRows.length; s++) {
+                shapeNames.push(shapeRows[s].name);
+            }
+            result.inheritance = {
+                thingTemplate: String(entity.thingTemplate),
+                implementedShapes: shapeNames
+            };
+        }
+    }
+} catch (err) {
+    logger.error("VPS.Development.MCP.Management_TS.GetEntityDefinition failed: " + err.message);
     throw err;
 }]]></code>
                                 </Row>

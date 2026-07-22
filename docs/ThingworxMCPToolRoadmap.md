@@ -22,6 +22,7 @@ This MCP building block closes that loop. Each tool below maps to one step of th
 - **`ExecuteService`** (built): calls a service on any Thing with given `params` and returns a structured `{success, result, executionTimeMs, error}` JSON result, never throwing. Live-verified against a real ThingWorx server, including a real params-binding bug found and fixed in the process. See design doc: `docs/superpowers/specs/2026-07-16-execute-service-design.md`. Known limitation: chaining into a service that itself does BLOB/binary parameter handling (e.g. `ImportEntityZip`'s own `SaveBinary` call) doesn't work yet — see the design doc's "Known limitations."
 - **`GetLogEntries`** (built): queries ThingWorx's built-in `DefaultLogRetrievalStrategyThing.RetrieveLogs` and returns a simplified `[{ timestamp, level, source, message }]` array, with time-window, level, and search filtering. Read-only, throws on failure. See design doc: `docs/superpowers/specs/2026-07-17-get-log-entries-design.md`.
 - **`ExportEntities`** (built): exports a project's entities as a base64-encoded zip (the reverse of `ImportEntityZip`), with a manifest of what was included. Wraps `Resources["SourceControlFunctions"].ExportSourceControlledEntitiesToZipFile`. See design doc: `docs/superpowers/specs/2026-07-18-export-entities-design.md`.
+- **`GetEntityDefinition`** (built): returns the live structural definition of a Thing, ThingTemplate, ThingShape, or DataShape — locally-defined services, properties, events, configuration table schemas, and inheritance chain. Read-only, throws on failure. `inheritance` is present only for `Thing`; no live-queryable mechanism for a `ThingTemplate`'s own base template was found on this ThingWorx 10.1 server, so `ThingTemplate` (and `ThingShape`, which has no inheritance concept) omit it. See design doc: `docs/superpowers/specs/2026-07-22-get-entity-definition-design.md`.
 
 ---
 
@@ -32,7 +33,7 @@ Ranked by how much each would have changed the investigation. Build the core loo
 1. `ExecuteService` (built) — makes the TEST_ pattern autonomous. Highest value.
 2. `GetLogEntries` (built) — removes the paste-the-error friction.
 3. `ExportEntities` (built) — kills stale state, enforces export discipline, completes the round trip.
-4. `GetEntityDefinition` — read live entity structure instead of guessing.
+4. `GetEntityDefinition` (built) — read live entity structure instead of guessing.
 5. `ListEntities` — discover what exists before referencing it.
 6. `ValidateImport` (dry run) — catch failures before committing.
 7. `GetPlatformInfo` — calibrate to the actual server (Rhino version, extensions).
@@ -74,13 +75,13 @@ Each tool notes its purpose, inputs, output shape, whether it mutates server sta
 - **Output:** `{ zipContent, manifest, entityCount }` — `zipContent` is a base64 zip in the same format `ImportEntityZip` accepts, `manifest` is an array of the entity file paths included, `entityCount` is `manifest.length`.
 - **Removes:** stale-state bugs. The retrospectives flagged "export before every session" as essential because entities edited in Composer make Claude's view stale. This automates that discipline: Claude exports current state before starting.
 
-### 4.4 `GetEntityDefinition`
+### 4.4 `GetEntityDefinition`  (built)
 
-**Purpose:** Return the live definition of a Thing, ThingTemplate, ThingShape, or DataShape: properties, services with signatures, events, and inherited members.
+**Purpose:** Return the live definition of a Thing, ThingTemplate, ThingShape, or DataShape: locally-defined services, properties, events, configuration table schemas, and inheritance chain.
 
 - **Mutates state:** No.
-- **Inputs:** `entityName`, `entityType`.
-- **Output:** structured definition (properties with base types, services with input/output signatures, events, config tables, inheritance chain).
+- **Inputs:** `entityName` (required), `entityType` (required, one of `Thing`/`ThingTemplate`/`ThingShape`/`DataShape`).
+- **Output:** for `DataShape`: `{ entityName, entityType, fields }`. For `Thing`/`ThingTemplate`/`ThingShape`: `{ entityName, entityType, services, properties, events, configurationTables, inheritance? }`, where `services`/`properties`/`events` are locally-defined only (not inherited) and `configurationTables` is schema only (no row data). `inheritance` (`{ thingTemplate, implementedShapes }`) is present only for `Thing`. `ThingTemplate` does **not** get a base-template field in `inheritance` — it has none: no live-queryable mechanism for a `ThingTemplate`'s own base template was found on this ThingWorx 10.1 server during implementation (see the design doc's "Live-verification dependencies" section), so `ThingTemplate` results omit `inheritance` entirely, the same as `ThingShape` (which has no inheritance concept at all). See design doc: `docs/superpowers/specs/2026-07-22-get-entity-definition-design.md`.
 - **Removes:** the "approximate knowledge" failures. Claude reads the actual entity instead of inferring it from a possibly-stale export.
 
 ### 4.5 `ListEntities`
