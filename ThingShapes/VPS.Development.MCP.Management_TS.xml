@@ -645,12 +645,20 @@ try {
         var properties = filterLocal(entity.GetPropertyDefinitions(), entityName);
         var events = filterLocal(entity.GetEventDefinitions(), entityName);
 
+        var tableNames = flattenInfoTable(entity.GetConfigurationTables());
+        var configurationTables = [];
+        for (var t = 0; t < tableNames.length; t++) {
+            var tableDef = flattenInfoTable(entity.GetConfigurationTableDefinition({ tableName: tableNames[t].name }));
+            configurationTables.push(tableDef[0]);
+        }
+
         result = {
             entityName: entityName,
             entityType: entityType,
             services: services,
             properties: properties,
-            events: events
+            events: events,
+            configurationTables: configurationTables
         };
     }
 } catch (err) {
